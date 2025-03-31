@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, browserLocalPersistence, browserSessionPersistence, setPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
@@ -60,5 +60,10 @@ if (typeof window !== 'undefined') {
     console.error("[Firebase] Error checking analytics support:", error);
   });
 }
+
+// Set persistence after initialization
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.error("[Firebase] Error setting persistence:", error);
+});
 
 export { app, auth, db, storage, analytics };
