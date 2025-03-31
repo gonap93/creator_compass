@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -14,8 +14,33 @@ const firebaseConfig = {
   measurementId: "G-E7KVKS48QJ"
 };
 
+console.log("[Firebase] Initializing Firebase with config:", {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
+  hasApiKey: !!firebaseConfig.apiKey
+});
+
 // Initialize Firebase
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let app: FirebaseApp;
+try {
+  if (getApps().length) {
+    console.log("[Firebase] Using existing Firebase app");
+    app = getApp();
+  } else {
+    console.log("[Firebase] Creating new Firebase app");
+    app = initializeApp(firebaseConfig);
+  }
+} catch (error: any) {
+  console.error("[Firebase] Error initializing Firebase:", {
+    code: error.code,
+    message: error.message,
+    stack: error.stack
+  });
+  throw error;
+}
+
+// Initialize services
+console.log("[Firebase] Initializing Firebase services");
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -23,7 +48,17 @@ const storage = getStorage(app);
 // Initialize Analytics only in browser environment
 let analytics = null;
 if (typeof window !== 'undefined') {
-  isSupported().then(yes => yes && (analytics = getAnalytics(app)));
+  console.log("[Firebase] Checking analytics support");
+  isSupported().then(yes => {
+    if (yes) {
+      console.log("[Firebase] Analytics supported, initializing");
+      analytics = getAnalytics(app);
+    } else {
+      console.log("[Firebase] Analytics not supported in this environment");
+    }
+  }).catch(error => {
+    console.error("[Firebase] Error checking analytics support:", error);
+  });
 }
 
 export { app, auth, db, storage, analytics };
