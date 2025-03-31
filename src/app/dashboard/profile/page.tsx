@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import ProfileForm from '@/components/profile/ProfileForm';
 import ProfilePictureUpload from '@/components/profile/ProfilePictureUpload';
@@ -26,9 +27,11 @@ export default function ProfilePage() {
             <div className="flex-shrink-0">
               <div className="w-32 h-32 rounded-full bg-[#2a2a2a] overflow-hidden">
                 {user?.photoURL ? (
-                  <img
+                  <Image
                     src={user.photoURL}
                     alt={user.displayName || 'Profile'}
+                    width={128}
+                    height={128}
                     className="w-full h-full object-cover"
                   />
                 ) : (

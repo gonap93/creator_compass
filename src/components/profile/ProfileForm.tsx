@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { UserProfile, getUserProfile, updateUserProfile } from '@/lib/firebase/profileUtils';
 import { handleUserSignedIn } from '@/lib/firebase/authUtils';
@@ -21,14 +21,7 @@ export default function ProfileForm() {
     contentCategories: [],
   });
 
-  useEffect(() => {
-    if (user) {
-      console.log('Loading profile for user:', user.uid);
-      loadProfile();
-    }
-  }, [user]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -49,7 +42,14 @@ export default function ProfileForm() {
     } catch (error) {
       console.error('Error loading profile:', error);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      console.log('Loading profile for user:', user.uid);
+      loadProfile();
+    }
+  }, [user, loadProfile]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

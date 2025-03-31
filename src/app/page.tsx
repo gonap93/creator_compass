@@ -290,7 +290,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  "Creator Compass has transformed how I manage my content. The organization tools are incredible, and the analytics help me understand what works."
+                  &ldquo;Creator Compass has transformed how I manage my content. The organization tools are incredible, and the analytics help me understand what works.&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -313,7 +313,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  "The content board feature is a game-changer. I can finally keep track of all my video ideas and their progress in one place. The analytics are super helpful too!"
+                  &ldquo;The content board feature is a game-changer. I can finally keep track of all my video ideas and their progress in one place. The analytics are super helpful too!&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -336,7 +336,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  "Managing multiple social media accounts is so much easier now. The scheduling and analytics features save me hours every week. Worth every penny!"
+                  &ldquo;Managing multiple social media accounts is so much easier now. The scheduling and analytics features save me hours every week. Worth every penny!&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
