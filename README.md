@@ -18,7 +18,7 @@ A modern content management platform for creators to organize, track, and manage
 - **Authentication**: Firebase Auth
 - **Database**: Firebase Firestore
 - **Storage**: Firebase Storage
-- **AI Integration**: OpenAI, Anthropic, Replicate
+- **AI Integration**: Anthropic, Replicate
 - **Audio Processing**: Deepgram
 
 ## Getting Started
@@ -27,7 +27,7 @@ A modern content management platform for creators to organize, track, and manage
 
 - Node.js 18+ and npm
 - Firebase project with Firestore and Authentication enabled
-- API keys for integrated services (OpenAI, Anthropic, etc.)
+- API keys for integrated services (Anthropic, Replicate, etc.)
 
 ### Installation
 
@@ -51,7 +51,6 @@ A modern content management platform for creators to organize, track, and manage
    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
    NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
    
-   OPENAI_API_KEY=your_openai_key
    ANTHROPIC_API_KEY=your_anthropic_key
    REPLICATE_API_KEY=your_replicate_key
    DEEPGRAM_API_KEY=your_deepgram_key
