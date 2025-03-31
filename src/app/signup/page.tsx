@@ -4,12 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signInWithGoogle } from '@/lib/firebase/firebaseUtils';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase/firebase';
 
 export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleGoogleSignUp = async () => {
@@ -19,6 +22,7 @@ export default function SignUp() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Error signing up with Google:', error);
+      setError('Failed to sign up with Google. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -27,11 +31,27 @@ export default function SignUp() {
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToTerms) {
-      alert('Please agree to the Terms of Service and Privacy Policy');
+      setError('Please agree to the Terms of Service and Privacy Policy');
       return;
     }
-    // TODO: Implement email/password sign up
-    console.log('Email sign up:', email, password);
+
+    try {
+      setIsLoading(true);
+      setError('');
+      await createUserWithEmailAndPassword(auth, email, password);
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error('Error signing up with email:', error);
+      if (error.code === 'auth/email-already-in-use') {
+        setError('This email is already registered. Please sign in instead.');
+      } else if (error.code === 'auth/weak-password') {
+        setError('Password should be at least 6 characters long.');
+      } else {
+        setError('Failed to sign up. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,6 +77,12 @@ export default function SignUp() {
             </Link>
           </p>
 
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg p-4 mb-6">
+              {error}
+            </div>
+          )}
+
           {/* Social Sign Up */}
           <div className="space-y-4 mb-8">
             <button
@@ -66,7 +92,7 @@ export default function SignUp() {
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-gray-800 border-t-transparent rounded-full animate-spin" />
-              ) : (
+              ) :
                 <>
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -88,7 +114,7 @@ export default function SignUp() {
                   </svg>
                   Sign up with Google
                 </>
-              )}
+              }
             </button>
           </div>
 
@@ -154,9 +180,10 @@ export default function SignUp() {
 
             <button
               type="submit"
-              className="w-full bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              disabled={isLoading}
+              className="w-full bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign up
+              {isLoading ? 'Creating account...' : 'Sign up'}
             </button>
           </form>
         </div>

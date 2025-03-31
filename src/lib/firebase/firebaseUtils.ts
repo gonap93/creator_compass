@@ -3,6 +3,7 @@ import {
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
+  getRedirectResult,
 } from "firebase/auth";
 import {
   collection,
@@ -18,12 +19,12 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export const logoutUser = () => signOut(auth);
 
 export const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
   try {
+    const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    return result.user;
+    return result;
   } catch (error) {
-    console.error("Error signing in with Google", error);
+    console.error('Error signing in with Google:', error);
     throw error;
   }
 };
@@ -51,4 +52,18 @@ export const uploadFile = async (file: File, path: string) => {
   const storageRef = ref(storage, path);
   await uploadBytes(storageRef, file);
   return getDownloadURL(storageRef);
+};
+
+// Add this function to handle redirect results
+export const handleRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth);
+    if (result) {
+      // User successfully signed in
+      return result;
+    }
+  } catch (error) {
+    console.error('Error handling redirect result:', error);
+    throw error;
+  }
 };
