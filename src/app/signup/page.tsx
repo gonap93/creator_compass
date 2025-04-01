@@ -61,7 +61,7 @@ export default function SignUp() {
       <div className="hidden lg:flex w-1/2 relative bg-[#1a1a1a]">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/70 to-[#0a0a0a]/1 z-10" />
         <Image
-          src="/login_background.png"
+          src="/login_background.jng"
           alt="Sign up background"
           fill
           className="object-cover object-[25%_center]"
