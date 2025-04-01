@@ -492,7 +492,7 @@ export default function Dashboard() {
       <div className="flex flex-col gap-6 mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
               Content Board
             </h1>
             <p className="text-gray-400 mt-1">Manage and organize your content ideas</p>
@@ -567,7 +567,7 @@ export default function Dashboard() {
 
       {/* Kanban Board */}
       <div 
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6"
+        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2"
         role="grid"
         aria-label="Content Board"
       >
@@ -576,7 +576,7 @@ export default function Dashboard() {
           return (
             <div
               key={status}
-              className={`bg-gradient-to-b ${statusColors[status as keyof typeof statusColors]} rounded-xl p-3 sm:p-4 border transition-all duration-200 ${
+              className={`bg-gradient-to-b ${statusColors[status as keyof typeof statusColors]} rounded-xl p-2 border transition-all duration-200 ${
                 draggedOverStatus === status
                   ? 'border-white/30 shadow-lg shadow-white/10'
                   : 'border-white/5'
@@ -625,7 +625,7 @@ export default function Dashboard() {
                     onDragEnd={handleDragEnd}
                     onClick={(e) => handleCardClick(e, item.id)}
                     onKeyDown={(e) => handleKeyDown(e, item, status as ContentStatus)}
-                    className={`group bg-[#0a0a0a]/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 cursor-move border transition-all duration-200 hover:shadow-lg hover:shadow-black/20 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] focus:border-transparent ${
+                    className={`group bg-[#0a0a0a]/50 backdrop-blur-sm rounded-lg p-2 cursor-move border transition-all duration-200 hover:shadow-lg hover:shadow-black/20 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] focus:border-transparent ${
                       focusedCardId === item.id
                         ? 'border-[#4CAF50]'
                         : 'border-white/5 hover:border-white/10'

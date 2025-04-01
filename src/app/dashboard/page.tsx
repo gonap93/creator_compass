@@ -23,8 +23,9 @@ export default function DashboardPage() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         router.push('/');
+      } else {
+        router.push('/dashboard/content');
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();

@@ -1,9 +1,110 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from "next/link";
+import anime from 'animejs';
 
 export default function Home() {
+  const [expandedItem, setExpandedItem] = useState<number | null>(2);
+
+  const features = [
+    {
+      icon: (
+        <svg className="w-6 h-6 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        </svg>
+      ),
+      title: "Content Board",
+      description: "Organize your content pipeline with our intuitive board view. Drag and drop content pieces between 'Ideas', 'In Progress', and 'Ready to Publish' columns to maintain a clear workflow."
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      ),
+      title: "AI Content Assistant",
+      description: "Let our AI help you generate content ideas, write engaging captions, and suggest trending topics in your niche. Save hours of brainstorming and research time."
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+      title: "Performance Analytics",
+      description: "Track your content's performance across all platforms in one dashboard. Monitor engagement rates, audience growth, and identify your best-performing content types."
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "Smart Scheduling",
+      description: "Schedule posts at optimal times based on your audience's activity patterns. Our AI analyzes historical data to suggest the best posting times for maximum engagement."
+    },
+    {
+      icon: (
+        <svg className="w-6 h-6 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16" />
+        </svg>
+      ),
+      title: "Cross-Platform Publishing",
+      description: "Create once, publish everywhere. Automatically adapt your content for different platforms like Instagram, Twitter, LinkedIn, and TikTok while maintaining your brand voice."
+    }
+  ];
+
+  useEffect(() => {
+    // Animate background dots with enhanced parameters
+    anime({
+      targets: '.dot',
+      translateY: function() {
+        return anime.random(-50, 50);
+      },
+      translateX: function() {
+        return anime.random(-50, 50);
+      },
+      scale: function() {
+        return anime.random(0.5, 1.5);
+      },
+      opacity: function() {
+        return anime.random(0.1, 0.3);
+      },
+      easing: 'easeInOutQuad',
+      duration: 5000,
+      delay: anime.stagger(200),
+      loop: true,
+      direction: 'alternate'
+    });
+
+    // Existing preview component animation
+    anime({
+      targets: '.preview-component',
+      translateX: [20, 0],
+      opacity: [0, 1],
+      duration: 800,
+      easing: 'easeOutCubic'
+    });
+  }, []);
+
+  const handleItemClick = (index: number) => {
+    if (expandedItem === index) {
+      setExpandedItem(null);
+    } else {
+      setExpandedItem(index);
+      // Animate the content when expanding
+      anime({
+        targets: `.feature-content-${index}`,
+        height: ['0px', 'auto'],
+        opacity: [0, 1],
+        duration: 400,
+        easing: 'easeOutCubic'
+      });
+    }
+  };
+
   return (
     <>
       {/* Header */}
@@ -34,13 +135,29 @@ export default function Home() {
       {/* Main Content */}
       <main className="min-h-screen bg-[#0a0a0a] text-white">
         {/* Hero Section */}
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
+          {/* Animated Background Pattern */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="dot absolute w-4 h-4 rounded-full bg-[#4CAF50]"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity: 0.1,
+                  filter: 'blur(1px)'
+                }}
+              />
+            ))}
+          </div>
+          
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] opacity-80" />
           
           {/* Content */}
           <div className="relative z-10 text-center px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white leading-[1.4] py-2">
               Organize Your Content Journey
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -64,56 +181,134 @@ export default function Home() {
         </section>
 
         {/* How it Works Section */}
-        <section className="py-24 px-4 bg-[#1a1a1a]">
+        <section className="py-24 px-4 bg-[#0a0a0a]">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-white">
               How It Works
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {/* Step 1 */}
-              <div className="relative">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#4CAF50]/10 rounded-full flex items-center justify-center mb-4 relative">
-                    <span className="text-2xl font-bold text-[#4CAF50]">1</span>
-                    <div className="hidden md:block absolute top-1/2 left-full w-[calc(200%+2rem)] h-[2px] bg-[#4CAF50] -translate-y-1/2" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              {/* Features List */}
+              <div className="space-y-4">
+                {features.map((feature, index) => (
+                  <div
+                    key={index}
+                    className={`bg-[#1a1a1a] rounded-xl transition-all duration-300 cursor-pointer border ${
+                      expandedItem === index ? 'border-[#4CAF50]' : 'border-[#4CAF50]/10 hover:border-[#4CAF50]/30'
+                    }`}
+                  >
+                    <div
+                      className="p-6 flex items-center justify-between gap-4"
+                      onClick={() => handleItemClick(index)}
+                    >
+                      <div className="flex items-center gap-4">
+                        {feature.icon}
+                        <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
+                      </div>
+                      <svg
+                        className={`w-6 h-6 transform transition-transform ${
+                          expandedItem === index ? 'rotate-45' : ''
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        {expandedItem === index ? (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        ) : (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        )}
+                      </svg>
+                    </div>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${
+                        expandedItem === index ? 'max-h-48' : 'max-h-0'
+                      } feature-content-${index}`}
+                    >
+                      <div className="p-6 pt-0 text-gray-400">
+                        {feature.description}
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2 text-center">Create Ideas</h3>
-                  <p className="text-gray-400 text-center">Brainstorm and capture your content ideas in one place</p>
-                </div>
+                ))}
               </div>
 
-              {/* Step 2 */}
-              <div className="relative">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#4CAF50]/10 rounded-full flex items-center justify-center mb-4 relative">
-                    <span className="text-2xl font-bold text-[#4CAF50]">2</span>
-                    <div className="hidden md:block absolute top-1/2 left-full w-[calc(200%+2rem)] h-[2px] bg-[#4CAF50] -translate-y-1/2" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2 text-center">Plan & Organize</h3>
-                  <p className="text-gray-400 text-center">Structure your content pipeline with our intuitive board</p>
-                </div>
-              </div>
+              {/* Preview Component */}
+              <div className="preview-component sticky top-24 bg-[#1a1a1a] rounded-xl border border-[#4CAF50]/10 overflow-hidden">
+                <div className="relative aspect-[4/3]">
+                  {/* Mock Content Board Interface */}
+                  <div className="absolute inset-0 bg-[#1a1a1a] p-4">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div className="w-3 h-3 rounded-full bg-[#4CAF50]"></div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-24 h-8 bg-[#4CAF50]/10 rounded-lg"></div>
+                        <div className="w-8 h-8 bg-[#4CAF50]/10 rounded-lg"></div>
+                      </div>
+                    </div>
 
-              {/* Step 3 */}
-              <div className="relative">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#4CAF50]/10 rounded-full flex items-center justify-center mb-4 relative">
-                    <span className="text-2xl font-bold text-[#4CAF50]">3</span>
-                    <div className="hidden md:block absolute top-1/2 left-full w-[calc(200%+2rem)] h-[2px] bg-[#4CAF50] -translate-y-1/2" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2 text-center">Track Progress</h3>
-                  <p className="text-gray-400 text-center">Monitor your content from ideation to publication</p>
-                </div>
-              </div>
+                    {/* Content Area */}
+                    <div className="grid grid-cols-3 gap-4">
+                      {/* Column 1 */}
+                      <div className="bg-[#0a0a0a] rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="h-4 w-20 bg-[#4CAF50]/20 rounded"></div>
+                          <div className="h-4 w-4 bg-[#4CAF50]/20 rounded"></div>
+                        </div>
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="bg-[#1a1a1a] rounded-lg p-3 mb-2">
+                            <div className="h-3 w-3/4 bg-[#4CAF50]/10 rounded mb-2"></div>
+                            <div className="h-2 w-1/2 bg-[#4CAF50]/10 rounded"></div>
+                          </div>
+                        ))}
+                      </div>
 
-              {/* Step 4 */}
-              <div className="relative">
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 bg-[#4CAF50]/10 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl font-bold text-[#4CAF50]">4</span>
+                      {/* Column 2 */}
+                      <div className="bg-[#0a0a0a] rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="h-4 w-24 bg-[#4CAF50]/20 rounded"></div>
+                          <div className="h-4 w-4 bg-[#4CAF50]/20 rounded"></div>
+                        </div>
+                        {[...Array(2)].map((_, i) => (
+                          <div key={i} className="bg-[#1a1a1a] rounded-lg p-3 mb-2">
+                            <div className="h-3 w-2/3 bg-[#4CAF50]/10 rounded mb-2"></div>
+                            <div className="h-2 w-1/2 bg-[#4CAF50]/10 rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Column 3 */}
+                      <div className="bg-[#0a0a0a] rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="h-4 w-16 bg-[#4CAF50]/20 rounded"></div>
+                          <div className="h-4 w-4 bg-[#4CAF50]/20 rounded"></div>
+                        </div>
+                        {[...Array(2)].map((_, i) => (
+                          <div key={i} className="bg-[#1a1a1a] rounded-lg p-3 mb-2">
+                            <div className="h-3 w-5/6 bg-[#4CAF50]/10 rounded mb-2"></div>
+                            <div className="h-2 w-1/3 bg-[#4CAF50]/10 rounded"></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2 text-center">Analyze & Improve</h3>
-                  <p className="text-gray-400 text-center">Get insights and optimize your content strategy</p>
+
+                  {/* Overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#4CAF50]/5 to-transparent pointer-events-none"></div>
                 </div>
               </div>
             </div>
