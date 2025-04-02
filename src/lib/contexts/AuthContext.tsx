@@ -4,6 +4,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut } from "firebase/auth";
 import { User } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import { handleUserSignedIn } from "../firebase/authUtils";
 
 interface AuthContextType {
   user: User | null;
@@ -25,8 +26,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     console.log("[AuthContext] Setting up auth state listener");
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       console.log("[AuthContext] Auth state changed:", user ? "User logged in" : "No user");
+      if (user) {
+        try {
+          await handleUserSignedIn(user);
+          console.log("[AuthContext] User profile created/updated successfully");
+        } catch (error) {
+          console.error("[AuthContext] Error creating/updating user profile:", error);
+        }
+      }
       setUser(user);
       setLoading(false);
     });

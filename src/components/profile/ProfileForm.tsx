@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
-import { UserProfile, getUserProfile, updateUserProfile } from '@/lib/firebase/profileUtils';
+import { UserProfile, getUserProfile, updateUserProfile, createUserProfile } from '@/lib/firebase/profileUtils';
 import { handleUserSignedIn } from '@/lib/firebase/authUtils';
 
 export default function ProfileForm() {
@@ -59,13 +59,37 @@ export default function ProfileForm() {
     setSuccess(false);
 
     try {
-      console.log('Saving profile data:', formData);
-      await updateUserProfile(user.uid, formData);
-      console.log('Profile saved successfully');
+      console.log('[ProfileForm] Starting profile save...');
+      console.log('[ProfileForm] Current user:', user.uid);
+      
+      // Check if profile exists
+      const existingProfile = await getUserProfile(user.uid);
+      console.log('[ProfileForm] Existing profile:', existingProfile ? 'Yes' : 'No');
+      
+      // Prepare profile data
+      const profileData = {
+        ...formData,
+        userId: user.uid,
+        email: user.email || '',
+        photoURL: user.photoURL,
+      };
+      
+      console.log('[ProfileForm] Profile data to save:', profileData);
+      
+      // Create or update profile
+      if (existingProfile) {
+        console.log('[ProfileForm] Updating existing profile...');
+        await updateUserProfile(user.uid, profileData);
+      } else {
+        console.log('[ProfileForm] Creating new profile...');
+        await createUserProfile(user.uid, profileData);
+      }
+      
+      console.log('[ProfileForm] Profile saved successfully');
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.error('[ProfileForm] Error saving profile:', error);
     } finally {
       setLoading(false);
     }
