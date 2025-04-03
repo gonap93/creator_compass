@@ -57,29 +57,7 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // Animate background dots with enhanced parameters
-    anime({
-      targets: '.dot',
-      translateY: function() {
-        return anime.random(-50, 50);
-      },
-      translateX: function() {
-        return anime.random(-50, 50);
-      },
-      scale: function() {
-        return anime.random(0.5, 1.5);
-      },
-      opacity: function() {
-        return anime.random(0.1, 0.3);
-      },
-      easing: 'easeInOutQuad',
-      duration: 5000,
-      delay: anime.stagger(200),
-      loop: true,
-      direction: 'alternate'
-    });
-
-    // Existing preview component animation
+    // Only keep the preview component animation
     anime({
       targets: '.preview-component',
       translateX: [20, 0],
@@ -136,22 +114,6 @@ export default function Home() {
       <main className="min-h-screen bg-[#0a0a0a] text-white">
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
-          {/* Animated Background Pattern */}
-          <div className="absolute inset-0 overflow-hidden">
-            {[...Array(50)].map((_, i) => (
-              <div
-                key={i}
-                className="dot absolute w-4 h-4 rounded-full bg-[#4CAF50]"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  opacity: 0.1,
-                  filter: 'blur(1px)'
-                }}
-              />
-            ))}
-          </div>
-          
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] opacity-80" />
           
