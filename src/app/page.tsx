@@ -103,14 +103,46 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-sm">
         <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <svg className="w-8 h-8 text-[#4CAF50]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2"/>
-              <path d="M16.24 7.76L14.12 14.12L7.76 16.24L9.88 9.88L16.24 7.76Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" fill="currentColor"/>
-            </svg>
-            <span className="font-semibold text-lg">Creator Compass</span>
-          </Link>
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-3">
+              <svg className="w-8 h-8 text-[#4CAF50]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2"/>
+                <path d="M16.24 7.76L14.12 14.12L7.76 16.24L9.88 9.88L16.24 7.76Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" fill="currentColor"/>
+              </svg>
+              <span className="font-semibold text-lg">Creator Compass</span>
+            </Link>
+          </div>
+            
+          {/* Navigation Links - Centered */}
+          <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="flex items-center gap-8">
+              <button 
+                onClick={() => {
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-white transition-colors font-bold"
+              >
+                Features
+              </button>
+              <button
+                onClick={() => {
+                  document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-white transition-colors font-bold"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => {
+                  document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-white transition-colors font-bold"
+              >
+                Testimonials
+              </button>
+            </div>
+          </div>
 
           {/* Auth Buttons */}
           <div className="flex items-center gap-4">
@@ -158,23 +190,23 @@ export default function Home() {
       {/* Main Content */}
       <main className="min-h-screen bg-[#0a0a0a] text-white">
         {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-20">
+        <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-32 overflow-hidden">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a]/50 to-[#0a0a0a] opacity-90" />
           
           {/* Content */}
-          <div className="relative z-10 text-center px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white leading-[1.4] py-2">
-              Organize Your Content Journey
+          <div className="relative z-10 max-w-[1200px] mx-auto text-center">
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
+              Organize Your Content<br />Journey
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-300 mb-16 max-w-3xl mx-auto font-light leading-relaxed">
               Transform your creative ideas into a structured content strategy. Plan, track, and manage your content across all platforms in one place.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
               {user ? (
                 <button
                   onClick={handleDashboardClick}
-                  className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300 hover:scale-105"
                 >
                   Go to Dashboard
                 </button>
@@ -182,24 +214,53 @@ export default function Home() {
                 <>
                   <Link
                     href="/signup"
-                    className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                    className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300 hover:scale-105"
                   >
                     Get Started
                   </Link>
                   <Link
                     href="/signin"
-                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300"
                   >
                     Sign In
                   </Link>
                 </>
               )}
             </div>
+
+            {/* Device Previews */}
+            <div className="relative w-full max-w-7xl mx-auto mt-8">
+              {/* Glow Effects */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-[#4CAF50]/30 rounded-full blur-[120px] opacity-70"></div>
+                <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#2E7D32]/30 rounded-full blur-[120px] opacity-70"></div>
+              </div>
+
+              {/* MacBook Preview */}
+              <div className="relative w-[1200px] bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 mx-auto">
+                <div className="absolute top-0 left-0 right-0 h-8 bg-[#0a0a0a] rounded-t-lg flex items-center px-4">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                </div>
+                <div className="pt-8">
+                  <Image
+                    src="/content-board.jpg"
+                    alt="Content Board Interface"
+                    width={1200}
+                    height={800}
+                    className="rounded-lg"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* How it Works Section */}
-        <section className="py-24 px-4 bg-[#0a0a0a]">
+        <section id="features" className="py-24 px-4 bg-[#0a0a0a]">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-white">
               How It Works
@@ -334,7 +395,7 @@ export default function Home() {
         </section>
 
         {/* Pricing Section */}
-        <section className="py-24 px-4">
+        <section id="pricing" className="py-24 px-4">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
               Simple, Transparent Pricing
@@ -518,7 +579,7 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-24 px-4 bg-[#1a1a1a]">
+        <section id="testimonials" className="py-24 px-4 bg-[#1a1a1a]">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
               What Creators Say
