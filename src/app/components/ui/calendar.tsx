@@ -53,33 +53,11 @@ function Calendar({
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
-      }}
       modifiers={{
         hasEvent: (date) =>
           industryDates.some(
             (event) => new Date(event.date).toDateString() === date.toDateString()
           ),
-      }}
-      modifiersStyles={{
-        hasEvent: {
-          position: "relative",
-          fontWeight: "bold",
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            bottom: "2px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "4px",
-            height: "4px",
-            borderRadius: "50%",
-            backgroundColor: "currentColor",
-            opacity: "0.5",
-          },
-        },
       }}
       numberOfMonths={1}
       {...props}
