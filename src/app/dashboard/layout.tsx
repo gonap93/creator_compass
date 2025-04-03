@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/firebase';
-import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut, FiCalendar } from 'react-icons/fi';
+import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut, FiCalendar, FiHome } from 'react-icons/fi';
 
 export default function DashboardLayout({
   children,
@@ -58,24 +58,19 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-[#0a0a0a]">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-[#0a0a0a] border-r border-[#333]">
-        {/* Logo Section */}
+      <aside className="fixed left-0 top-0 h-full w-64 bg-[#1a1a1a] border-r border-[#333] flex flex-col">
+        {/* Logo */}
         <div className="p-4 border-b border-[#333]">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <svg className="w-8 h-8 text-[#4CAF50]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="10"/>
-              <path d="M50 20L50 35" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-              <path d="M50 65L50 80" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-              <path d="M80 50L65 50" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-              <path d="M35 50L20 50" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-              <circle cx="50" cy="50" r="6" fill="currentColor"/>
-              <path d="M50 50L35 35" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
+            <svg className="w-8 h-8 text-[#4CAF50]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M16.24 7.76L14.12 14.12L7.76 16.24L9.88 9.88L16.24 7.76Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" fill="currentColor"/>
             </svg>
             <span className="font-semibold text-lg text-white">Creator Compass</span>
           </Link>
         </div>
 
-        {/* Navigation Items */}
         <nav className="p-4 space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
@@ -105,13 +100,22 @@ export default function DashboardLayout({
         </nav>
 
         {/* Sign Out Button - Bottom of Sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#333]">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#333] space-y-2">
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-gray-400 hover:bg-[#242424] hover:text-white text-sm"
+          >
+            <div className="p-1.5 rounded-lg">
+              <FiHome className="w-4 h-4" />
+            </div>
+            <span className="font-medium">Back to Home</span>
+          </Link>
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-gray-400 hover:bg-[#242424] hover:text-white"
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-colors text-gray-400 hover:bg-[#242424] hover:text-white text-sm"
           >
-            <div className="p-2 rounded-lg">
-              <FiLogOut className="w-5 h-5" />
+            <div className="p-1.5 rounded-lg">
+              <FiLogOut className="w-4 h-4" />
             </div>
             <span className="font-medium">Sign Out</span>
           </button>
