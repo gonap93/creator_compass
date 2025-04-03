@@ -27,15 +27,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     console.log("[AuthContext] Setting up auth state listener");
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      console.log("[AuthContext] Auth state changed:", user ? "User logged in" : "No user");
+      console.log("[AuthContext] Auth state changed:", {
+        isAuthenticated: !!user,
+        uid: user?.uid,
+        email: user?.email
+      });
+      
       if (user) {
         try {
+          console.log("[AuthContext] User is authenticated, creating/updating profile");
           await handleUserSignedIn(user);
           console.log("[AuthContext] User profile created/updated successfully");
-        } catch (error) {
-          console.error("[AuthContext] Error creating/updating user profile:", error);
+        } catch (error: any) {
+          console.error("[AuthContext] Error creating/updating user profile:", {
+            error,
+            code: error.code,
+            message: error.message,
+            stack: error.stack
+          });
         }
+      } else {
+        console.log("[AuthContext] No user authenticated");
       }
+      
       setUser(user);
       setLoading(false);
     });
@@ -52,14 +66,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log("[AuthContext] Opening Google sign in popup");
       const result = await signInWithPopup(auth, provider);
-      console.log("[AuthContext] Google sign in successful:", result.user.email);
+      console.log("[AuthContext] Google sign in successful:", {
+        uid: result.user.uid,
+        email: result.user.email
+      });
     } catch (error: any) {
       console.error("[AuthContext] Error signing in with Google:", {
         code: error.code,
         message: error.message,
         stack: error.stack
       });
-      throw error; // Re-throw to handle in UI
+      throw error;
     }
   };
 
@@ -74,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         message: error.message,
         stack: error.stack
       });
-      throw error; // Re-throw to handle in UI
+      throw error;
     }
   };
 

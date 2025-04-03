@@ -15,15 +15,24 @@ import { ContentIdea, ContentBoard } from '../types/content';
 
 // Add a new content idea
 export async function addContentIdea(contentIdea: Omit<ContentIdea, 'id'>) {
+  console.log('[ContentUtils] Starting addContentIdea with data:', contentIdea);
+  
   try {
+    console.log('[ContentUtils] Creating new document in contentIdeas collection');
     const docRef = await addDoc(collection(db, 'contentIdeas'), {
       ...contentIdea,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
+    console.log('[ContentUtils] Document created successfully with ID:', docRef.id);
     return { id: docRef.id, ...contentIdea };
-  } catch (error) {
-    console.error('Error adding content idea:', error);
+  } catch (error: any) {
+    console.error('[ContentUtils] Error adding content idea:', {
+      error,
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 }

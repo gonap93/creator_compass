@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/firebase';
-import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut, FiCalendar } from 'react-icons/fi';
 
 export default function DashboardLayout({
   children,
@@ -28,6 +28,12 @@ export default function DashboardLayout({
       label: 'Content Board',
       icon: FiFileText,
       color: '#4CAF50'
+    },
+    {
+      href: '/dashboard/calendar',
+      label: 'Calendar',
+      icon: FiCalendar,
+      color: '#E91E63'
     },
     {
       href: '/dashboard/analytics',

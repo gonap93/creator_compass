@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase/firebase';
 import { addContentIdea } from '@/lib/firebase/contentUtils';
 import { Platform, ContentGoal, ContentStatus } from '@/lib/types/content';
@@ -14,8 +14,25 @@ export default function AddContentModal({ onClose, onAdd }: AddContentModalProps
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    // Log authentication state when component mounts
+    console.log('[AddContentModal] Current auth state:', {
+      user: auth.currentUser,
+      isAuthenticated: !!auth.currentUser,
+      uid: auth.currentUser?.uid
+    });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Log authentication check
+    console.log('[AddContentModal] Checking auth before submit:', {
+      user: auth.currentUser,
+      isAuthenticated: !!auth.currentUser,
+      uid: auth.currentUser?.uid
+    });
+
     if (!auth.currentUser) {
       setError('You must be signed in to add content');
       return;
@@ -32,35 +49,34 @@ export default function AddContentModal({ onClose, onAdd }: AddContentModalProps
     const dueDate = formData.get('dueDate') as string;
     const tags = formData.get('tags') as string;
 
-    try {
-      console.log('Adding content idea with data:', {
-        userId: auth.currentUser.uid,
-        title,
-        description,
-        platform,
-        goal,
-        status: 'idea' as ContentStatus,
-        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-        dueDate
-      });
+    const contentData = {
+      userId: auth.currentUser.uid,
+      title,
+      description,
+      platform,
+      goal,
+      status: 'idea' as ContentStatus,
+      tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
+      dueDate,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
 
-      await addContentIdea({
-        userId: auth.currentUser.uid,
-        title,
-        description,
-        platform,
-        goal,
-        status: 'idea' as ContentStatus,
-        tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
-        dueDate,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
+    try {
+      console.log('[AddContentModal] Attempting to add content idea:', contentData);
+
+      await addContentIdea(contentData);
+      console.log('[AddContentModal] Content idea added successfully');
 
       onAdd();
       onClose();
     } catch (err: any) {
-      console.error('Error adding content idea:', err);
+      console.error('[AddContentModal] Error adding content idea:', {
+        error: err,
+        code: err.code,
+        message: err.message,
+        stack: err.stack
+      });
       setError(err.message || 'Failed to add content idea. Please check your Firestore permissions.');
       setLoading(false);
     }
