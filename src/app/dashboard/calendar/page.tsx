@@ -129,7 +129,7 @@ export default function CalendarPage() {
         {/* Today's Schedule */}
         <div className="mb-6">
           <h3 className="text-sm font-medium mb-2 flex items-center">
-            📅 Today's Content Tasks
+            📅 Today&apos;s Content Tasks
           </h3>
           <div className="space-y-2">
             {todayEvents.map((event, i) => (
