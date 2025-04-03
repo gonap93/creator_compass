@@ -22,10 +22,11 @@ export default function DashboardPage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push('/');
+        router.push('/signin');
       } else {
         router.push('/dashboard/content');
       }
+      setLoading(false);
     });
 
     return () => unsubscribe();

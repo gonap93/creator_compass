@@ -3,9 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import anime from 'animejs';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Home() {
   const [expandedItem, setExpandedItem] = useState<number | null>(2);
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  const { user } = useAuth();
+  const router = useRouter();
 
   const features = [
     {
@@ -83,6 +89,14 @@ export default function Home() {
     }
   };
 
+  const handleDashboardClick = () => {
+    if (user) {
+      router.push('/dashboard/content');
+    } else {
+      router.push('/signin');
+    }
+  };
+
   return (
     <>
       {/* Header */}
@@ -100,12 +114,43 @@ export default function Home() {
 
           {/* Auth Buttons */}
           <div className="flex items-center gap-4">
-            <Link href="/signin" className="text-gray-300 hover:text-white transition-colors px-4 py-2">
-              Sign in
-            </Link>
-            <Link href="/signup" className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-4 py-2 rounded-lg">
-              Sign up
-            </Link>
+            {user ? (
+              <>
+                <button
+                  onClick={handleDashboardClick}
+                  className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-4 py-2 rounded-lg"
+                >
+                  Go to Dashboard
+                </button>
+                <button
+                  onClick={() => router.push('/dashboard/profile')}
+                  className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+                >
+                  {user.photoURL ? (
+                    <Image
+                      src={user.photoURL}
+                      alt={user.displayName || 'Profile'}
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-[#4CAF50] flex items-center justify-center text-white">
+                      {user.displayName?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/signin" className="text-gray-300 hover:text-white transition-colors px-4 py-2">
+                  Sign in
+                </Link>
+                <Link href="/signup" className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-4 py-2 rounded-lg">
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       </header>
@@ -126,18 +171,29 @@ export default function Home() {
               Transform your creative ideas into a structured content strategy. Plan, track, and manage your content across all platforms in one place.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/signup"
-                className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-              >
-                Get Started
-              </Link>
-              <Link
-                href="/signin"
-                className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
-              >
-                Sign In
-              </Link>
+              {user ? (
+                <button
+                  onClick={handleDashboardClick}
+                  className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                >
+                  Go to Dashboard
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/signup"
+                    className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  >
+                    Get Started
+                  </Link>
+                  <Link
+                    href="/signin"
+                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-lg font-medium transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -286,6 +342,38 @@ export default function Home() {
             <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
               Choose the plan that best fits your content creation needs
             </p>
+            
+            {/* Billing Period Toggle */}
+            <div className="flex flex-col items-center justify-center mb-12">
+              <div className="flex flex-col items-center gap-3">
+                <div className="bg-[#1a1a1a] rounded-full p-1 flex items-center">
+                  <button
+                    onClick={() => setBillingPeriod('monthly')}
+                    className={`relative z-10 px-6 py-2 rounded-full transition-colors ${
+                      billingPeriod === 'monthly'
+                        ? 'bg-[#4CAF50] text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setBillingPeriod('yearly')}
+                    className={`relative z-10 px-6 py-2 rounded-full transition-colors ${
+                      billingPeriod === 'yearly'
+                        ? 'bg-[#4CAF50] text-white'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Yearly
+                  </button>
+                </div>
+                <span className="text-sm bg-[#4CAF50]/10 text-[#4CAF50] px-3 py-1 rounded-full">
+                  Save 20% Yearly
+                </span>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Free Plan */}
               <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10 hover:border-[#4CAF50]/30 transition-all duration-300">
@@ -294,7 +382,7 @@ export default function Home() {
                     <h3 className="text-2xl font-bold mb-4">Free</h3>
                     <div className="flex items-baseline gap-1 mb-6">
                       <span className="text-4xl font-bold">$0</span>
-                      <span className="text-gray-400">/month</span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
                     </div>
                     <p className="text-gray-400">Perfect for getting started with content planning</p>
                   </div>
@@ -336,8 +424,10 @@ export default function Home() {
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold mb-4">Pro</h3>
                     <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-4xl font-bold">$19</span>
-                      <span className="text-gray-400">/month</span>
+                      <span className="text-4xl font-bold">
+                        ${billingPeriod === 'monthly' ? '19' : '15'}
+                      </span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
                     </div>
                     <p className="text-gray-400">For growing content creators</p>
                   </div>
@@ -382,8 +472,10 @@ export default function Home() {
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold mb-4">Business</h3>
                     <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-4xl font-bold">$49</span>
-                      <span className="text-gray-400">/month</span>
+                      <span className="text-4xl font-bold">
+                        ${billingPeriod === 'monthly' ? '49' : '39'}
+                      </span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
                     </div>
                     <p className="text-gray-400">For professional content teams</p>
                   </div>
