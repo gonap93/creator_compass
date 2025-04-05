@@ -266,7 +266,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden">
         {/* Hero Section */}
-        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
+        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 pt-24 pb-16 sm:py-32">
           {/* Background gradient */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#0a0a0a]" />
@@ -285,8 +285,8 @@ export default function Home() {
           
           {/* Content */}
           <div className="relative z-10 max-w-[1200px] mx-auto text-center">
-            <h1 className="text-[2.75rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
-              Organize Your Content<br />Journey
+            <h1 className="text-[2.5rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
+              Organize Your Content<br className="hidden sm:block" />Journey
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 sm:mb-16 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0">
               Transform your creative ideas into a structured content strategy. Plan, track, and manage your content across all platforms in one place.
@@ -295,7 +295,7 @@ export default function Home() {
               {user ? (
                 <button
                   onClick={handleDashboardClick}
-                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
+                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                 >
                   Go to Dashboard
                 </button>
@@ -303,13 +303,13 @@ export default function Home() {
                 <>
                   <Link
                     href="/signup"
-                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
+                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                   >
                     Get Started
                   </Link>
                   <Link
                     href="/signin"
-                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 active:bg-[#4CAF50]/20 touch-manipulation relative z-20"
+                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 active:bg-[#4CAF50]/20 touch-manipulation relative z-20"
                   >
                     Sign In
                   </Link>
