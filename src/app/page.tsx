@@ -264,9 +264,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden">
+      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden pt-[72px] sm:pt-[80px]">
         {/* Hero Section */}
-        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
+        <section className="relative min-h-[calc(100svh-72px)] sm:min-h-[calc(100svh-80px)] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
           {/* Background gradient */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#0a0a0a]" />
