@@ -12,6 +12,7 @@ export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const { user } = useAuth();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const features = [
     {
@@ -101,20 +102,20 @@ export default function Home() {
     <>
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-sm">
-        <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <nav className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3">
-              <svg className="w-8 h-8 text-[#4CAF50]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="flex items-center">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#4CAF50]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2"/>
                 <path d="M16.24 7.76L14.12 14.12L7.76 16.24L9.88 9.88L16.24 7.76Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" fill="currentColor"/>
               </svg>
-              <span className="font-semibold text-lg">Creator Compass</span>
+              <span className="font-semibold text-base sm:text-lg">Creator Compass</span>
             </Link>
           </div>
             
-          {/* Navigation Links - Centered */}
+          {/* Navigation Links - Desktop */}
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex items-center gap-8">
               <button 
@@ -144,13 +145,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-4">
+          {/* Auth Buttons and Mobile Menu */}
+          <div className="flex items-center gap-2 sm:gap-4">
             {user ? (
               <>
                 <button
                   onClick={handleDashboardClick}
-                  className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-4 py-2 rounded-lg"
+                  className="hidden md:block bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base"
                 >
                   Go to Dashboard
                 </button>
@@ -164,10 +165,10 @@ export default function Home() {
                       alt={user.displayName || 'Profile'}
                       width={32}
                       height={32}
-                      className="rounded-full"
+                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-full"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#4CAF50] flex items-center justify-center text-white">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#4CAF50] flex items-center justify-center text-white">
                       {user.displayName?.[0]?.toUpperCase() || '?'}
                     </div>
                   )}
@@ -175,38 +176,126 @@ export default function Home() {
               </>
             ) : (
               <>
-                <Link href="/signin" className="text-gray-300 hover:text-white transition-colors px-4 py-2">
+                <Link href="/signin" className="text-gray-300 hover:text-white transition-colors px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base">
                   Sign in
                 </Link>
-                <Link href="/signup" className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-4 py-2 rounded-lg">
+                <Link href="/signup" className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base">
                   Sign up
                 </Link>
               </>
             )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-gray-300 hover:text-white ml-1"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {isMobileMenuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
           </div>
         </nav>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-[#0a0a0a]/95 backdrop-blur-sm border-t border-gray-800">
+            <div className="px-4 py-3 space-y-3">
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
+              >
+                Features
+              </button>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
+              >
+                Testimonials
+              </button>
+              {user && (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleDashboardClick();
+                  }}
+                  className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
+                >
+                  Go to Dashboard
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
-      <main className="min-h-screen bg-[#0a0a0a] text-white">
+      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden">
         {/* Hero Section */}
-        <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-32 overflow-hidden">
+        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
           {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a]/50 to-[#0a0a0a] opacity-90" />
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[#0a0a0a]" />
+            {/* Multiple overlapping gradients for smoother transition */}
+            <div className="absolute inset-0">
+              {/* Base gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#4CAF50]/3 from-0% via-[#0a0a0a] via-70% to-[#0a0a0a] to-100%" />
+              {/* Subtle overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#0a0a0a]/80 via-80% to-[#0a0a0a] to-100%" />
+              {/* Extended glow effect */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px]">
+                <div className="absolute inset-0 bg-[#4CAF50]/3 rounded-[100%] blur-[150px] opacity-50" />
+              </div>
+            </div>
+          </div>
           
           {/* Content */}
           <div className="relative z-10 max-w-[1200px] mx-auto text-center">
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
+            <h1 className="text-[2.75rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
               Organize Your Content<br />Journey
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-16 max-w-3xl mx-auto font-light leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 sm:mb-16 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0">
               Transform your creative ideas into a structured content strategy. Plan, track, and manage your content across all platforms in one place.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-16 px-6 sm:px-0">
               {user ? (
                 <button
                   onClick={handleDashboardClick}
-                  className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300 hover:scale-105"
+                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105"
                 >
                   Go to Dashboard
                 </button>
@@ -214,13 +303,13 @@ export default function Home() {
                 <>
                   <Link
                     href="/signup"
-                    className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300 hover:scale-105"
+                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105"
                   >
                     Get Started
                   </Link>
                   <Link
                     href="/signin"
-                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-10 py-4 rounded-lg text-xl font-medium transition-all duration-300"
+                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300"
                   >
                     Sign In
                   </Link>
@@ -229,29 +318,30 @@ export default function Home() {
             </div>
 
             {/* Device Previews */}
-            <div className="relative w-full max-w-7xl mx-auto mt-8">
+            <div className="relative w-full max-w-[90%] sm:max-w-7xl mx-auto mt-4 sm:mt-8">
               {/* Glow Effects */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[600px] bg-[#4CAF50]/30 rounded-full blur-[120px] opacity-70"></div>
-                <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#2E7D32]/30 rounded-full blur-[120px] opacity-70"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#4CAF50]/20 rounded-full blur-[100px] opacity-40" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-[45%] -translate-y-1/2 w-[600px] h-[600px] bg-[#2E7D32]/20 rounded-full blur-[100px] opacity-40" />
               </div>
 
               {/* MacBook Preview */}
-              <div className="relative w-[1200px] bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 mx-auto">
-                <div className="absolute top-0 left-0 right-0 h-8 bg-[#0a0a0a] rounded-t-lg flex items-center px-4">
-                  <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <div className="relative w-full sm:w-[1200px] bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 mx-auto">
+                <div className="absolute top-0 left-0 right-0 h-6 sm:h-8 bg-[#0a0a0a] rounded-t-lg flex items-center px-4">
+                  <div className="flex gap-1.5 sm:gap-2">
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
                   </div>
                 </div>
-                <div className="pt-8">
+                <div className="pt-6 sm:pt-8">
                   <Image
                     src="/content-board.jpg"
                     alt="Content Board Interface"
                     width={1200}
                     height={800}
-                    className="rounded-lg"
+                    className="w-full h-auto rounded-b-lg"
+                    priority
                   />
                 </div>
               </div>
@@ -260,8 +350,9 @@ export default function Home() {
         </section>
 
         {/* How it Works Section */}
-        <section id="features" className="py-24 px-4 bg-[#0a0a0a]">
-          <div className="max-w-7xl mx-auto">
+        <section id="features" className="relative py-24 px-4">
+          <div className="absolute inset-0 bg-[#0a0a0a]" />
+          <div className="relative z-10 max-w-7xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-white">
               How It Works
             </h2>
