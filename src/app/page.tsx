@@ -176,10 +176,10 @@ export default function Home() {
               </>
             ) : (
               <>
-                <Link href="/signin" className="text-gray-300 hover:text-white transition-colors px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base">
+                <Link href="/signin" className="block text-gray-300 hover:text-white transition-colors px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base active:bg-white/10 rounded-lg touch-manipulation">
                   Sign in
                 </Link>
-                <Link href="/signup" className="bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base">
+                <Link href="/signup" className="block bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base active:bg-[#3d8b40] touch-manipulation">
                   Sign up
                 </Link>
               </>
@@ -264,9 +264,9 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden pt-[72px] sm:pt-[80px]">
+      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden">
         {/* Hero Section */}
-        <section className="relative min-h-[calc(100svh-72px)] sm:min-h-[calc(100svh-80px)] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
+        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 py-16 sm:py-32">
           {/* Background gradient */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#0a0a0a]" />
@@ -295,7 +295,7 @@ export default function Home() {
               {user ? (
                 <button
                   onClick={handleDashboardClick}
-                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105"
+                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                 >
                   Go to Dashboard
                 </button>
@@ -303,13 +303,13 @@ export default function Home() {
                 <>
                   <Link
                     href="/signup"
-                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105"
+                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                   >
                     Get Started
                   </Link>
                   <Link
                     href="/signin"
-                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300"
+                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 active:bg-[#4CAF50]/20 touch-manipulation relative z-20"
                   >
                     Sign In
                   </Link>
