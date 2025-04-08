@@ -23,7 +23,7 @@ export default function SignUp() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Error signing up with Google:', error);
-      setError('Failed to sign up with Google. Please try again.');
+      setError('Error al registrarse con Google. Por favor, inténtalo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +32,7 @@ export default function SignUp() {
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToTerms) {
-      setError('Please agree to the Terms of Service and Privacy Policy');
+      setError('Por favor, acepta los Términos de Servicio y la Política de Privacidad');
       return;
     }
 
@@ -44,11 +44,11 @@ export default function SignUp() {
     } catch (error: any) {
       console.error('Error signing up with email:', error);
       if (error.code === 'auth/email-already-in-use') {
-        setError('This email is already registered. Please sign in instead.');
+        setError('Este correo electrónico ya está registrado. Por favor, inicia sesión en su lugar.');
       } else if (error.code === 'auth/weak-password') {
-        setError('Password should be at least 6 characters long.');
+        setError('La contraseña debe tener al menos 6 caracteres.');
       } else {
-        setError('Failed to sign up. Please try again.');
+        setError('Error al registrarse. Por favor, inténtalo de nuevo.');
       }
     } finally {
       setIsLoading(false);
@@ -102,11 +102,11 @@ export default function SignUp() {
           </div>
 
           <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10">
-            <h1 className="text-2xl font-bold text-white mb-2">Create your account</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Crea tu cuenta</h1>
             <p className="text-gray-400 mb-8">
-              Already have an account?{' '}
+              ¿Ya tienes una cuenta?{' '}
               <Link href="/signin" className="text-[#4CAF50] hover:text-[#45a049] transition-colors">
-                Sign in
+                Iniciar sesión
               </Link>
             </p>
 
@@ -145,7 +145,7 @@ export default function SignUp() {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                       />
                     </svg>
-                    Sign up with Google
+                    Registrarse con Google
                   </>
                 )}
               </button>
@@ -157,7 +157,7 @@ export default function SignUp() {
                 <div className="w-full border-t border-gray-800"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 text-gray-500 bg-[#1a1a1a]">Or continue with</span>
+                <span className="px-2 text-gray-500 bg-[#1a1a1a]">O continuar con</span>
               </div>
             </div>
 
@@ -165,7 +165,7 @@ export default function SignUp() {
             <form onSubmit={handleEmailSignUp} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                  Email address
+                  Correo electrónico
                 </label>
                 <input
                   type="email"
@@ -173,13 +173,13 @@ export default function SignUp() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-[#0a0a0a] text-white border border-[#4CAF50]/20 rounded-lg px-4 py-2 focus:outline-none focus:border-[#4CAF50]/40"
-                  placeholder="name@example.com"
+                  placeholder="nombre@ejemplo.com"
                   required
                 />
               </div>
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
-                  Password
+                  Contraseña
                 </label>
                 <input
                   type="password"
@@ -203,13 +203,13 @@ export default function SignUp() {
                   required
                 />
                 <label htmlFor="terms" className="text-sm text-gray-400">
-                  I agree to the{' '}
+                  Acepto los{' '}
                   <Link href="/terms" className="text-[#4CAF50] hover:text-[#45a049] transition-colors">
-                    Terms of Service
+                    Términos de Servicio
                   </Link>
-                  {' '}and{' '}
+                  {' '}y la{' '}
                   <Link href="/privacy" className="text-[#4CAF50] hover:text-[#45a049] transition-colors">
-                    Privacy Policy
+                    Política de Privacidad
                   </Link>
                 </label>
               </div>
@@ -219,7 +219,7 @@ export default function SignUp() {
                 disabled={isLoading}
                 className="w-full bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? 'Creating account...' : 'Sign up'}
+                {isLoading ? 'Creando cuenta...' : 'Registrarse'}
               </button>
             </form>
           </div>

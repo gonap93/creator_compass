@@ -26,7 +26,7 @@ export default function SignIn() {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError('Invalid email or password');
+      setError('Correo electrónico o contraseña inválidos');
       setLoading(false);
     }
   };
@@ -78,7 +78,7 @@ export default function SignIn() {
           </div>
 
           <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10">
-            <h2 className="text-2xl font-bold mb-6 text-center text-white">Welcome back</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-white">Bienvenido de nuevo</h2>
             
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg p-4 mb-6">
@@ -97,14 +97,14 @@ export default function SignIn() {
                 <div className="w-full border-t border-gray-800"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 text-gray-500 bg-[#1a1a1a]">Or continue with</span>
+                <span className="px-2 text-gray-500 bg-[#1a1a1a]">O continuar con</span>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
-                  Email address
+                  Correo electrónico
                 </label>
                 <input
                   id="email"
@@ -112,13 +112,13 @@ export default function SignIn() {
                   type="email"
                   required
                   className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]/40"
-                  placeholder="you@example.com"
+                  placeholder="tu@ejemplo.com"
                 />
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
-                  Password
+                  Contraseña
                 </label>
                 <input
                   id="password"
@@ -132,7 +132,7 @@ export default function SignIn() {
 
               <div className="flex items-center justify-between">
                 <Link href="/forgot-password" className="text-sm text-[#4CAF50] hover:text-[#45a049] transition-colors">
-                  Forgot your password?
+                  ¿Olvidaste tu contraseña?
                 </Link>
               </div>
 
@@ -141,14 +141,14 @@ export default function SignIn() {
                 disabled={loading}
                 className="w-full bg-[#4CAF50] hover:bg-[#45a049] text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Signing in...' : 'Sign in'}
+                {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
               </button>
             </form>
 
             <p className="mt-4 text-center text-gray-400">
-              Don&apos;t have an account?{' '}
+              ¿No tienes una cuenta?{' '}
               <Link href="/signup" className="text-[#4CAF50] hover:text-[#45a049] transition-colors">
-                Sign up
+                Registrarse
               </Link>
             </p>
           </div>
