@@ -129,7 +129,7 @@ export default function CalendarPage() {
         {/* Today's Schedule */}
         <div className="mb-6">
           <h3 className="text-sm font-medium mb-2 flex items-center">
-            📅 Today&apos;s Content Tasks
+            📅 Tareas de Contenido de Hoy
           </h3>
           <div className="space-y-2">
             {todayEvents.map((event, i) => (
@@ -143,12 +143,17 @@ export default function CalendarPage() {
 
         {/* Content Event Types */}
         <div className="mb-6">
-          <h3 className="text-sm font-medium mb-2">Event Types</h3>
+          <h3 className="text-sm font-medium mb-2">Tipos de Eventos</h3>
           <div className="space-y-2">
             {(['sale', 'holiday', 'launch', 'social'] as const).map((type) => (
               <div key={type} className="flex items-center gap-2 text-sm">
                 <div className={cn("w-3 h-3 rounded-full", getEventTypeColor(type))} />
-                <span className="capitalize">{type}</span>
+                <span className="capitalize">
+                  {type === 'sale' && 'Venta'}
+                  {type === 'holiday' && 'Festivo'}
+                  {type === 'launch' && 'Lanzamiento'}
+                  {type === 'social' && 'Social'}
+                </span>
               </div>
             ))}
           </div>
@@ -159,7 +164,7 @@ export default function CalendarPage() {
       <div className="flex-1 p-6 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Content Calendar</h1>
+            <h1 className="text-2xl font-semibold">Calendario de Contenido</h1>
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => navigateMonth('prev')}
@@ -183,7 +188,7 @@ export default function CalendarPage() {
               <Search className="h-4 w-4" />
             </button>
             <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 flex items-center">
-              Add content event
+              Agregar evento de contenido
               <Plus className="h-4 w-4 ml-2" />
             </button>
           </div>
@@ -192,13 +197,13 @@ export default function CalendarPage() {
         {/* Calendar */}
         <div className="border border-border/50 rounded-lg p-6 bg-card/50">
           <div className="grid grid-cols-7 text-sm font-medium mb-4 text-center">
-            <div>Monday</div>
-            <div>Tuesday</div>
-            <div>Wednesday</div>
-            <div>Thursday</div>
-            <div>Friday</div>
-            <div>Saturday</div>
-            <div>Sunday</div>
+            <div>Lunes</div>
+            <div>Martes</div>
+            <div>Miércoles</div>
+            <div>Jueves</div>
+            <div>Viernes</div>
+            <div>Sábado</div>
+            <div>Domingo</div>
           </div>
           <div className="grid grid-cols-7 gap-2">
             {/* Empty cells for days before the first day of the month */}
@@ -246,7 +251,7 @@ export default function CalendarPage() {
         {getContentEventsForDate(selectedDate).length > 0 && (
           <div className="mt-6">
             <h2 className="text-lg font-medium mb-4">
-              Content Events for {selectedDate.toLocaleDateString()}
+              Eventos de Contenido para {selectedDate.toLocaleDateString()}
             </h2>
             <div className="space-y-3">
               {getContentEventsForDate(selectedDate).map((event, i) => (

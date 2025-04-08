@@ -62,32 +62,32 @@ export default function AnalyticsPage() {
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
-          Content Analytics
+          Análisis de Contenido
         </h1>
-        <p className="text-gray-400 mt-1">Track your content performance and organization</p>
+        <p className="text-gray-400 mt-1">Rastrea el rendimiento y la organización de tu contenido</p>
       </div>
       
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Content Ideas</h3>
+          <h3 className="text-sm font-medium text-gray-500">Ideas de Contenido</h3>
           <p className="text-2xl font-bold text-white">24</p>
-          <p className="text-sm text-gray-400 mt-1">In pipeline</p>
+          <p className="text-sm text-gray-400 mt-1">En proceso</p>
         </Card>
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Published</h3>
+          <h3 className="text-sm font-medium text-gray-500">Publicados</h3>
           <p className="text-2xl font-bold text-white">156</p>
-          <p className="text-sm text-gray-400 mt-1">Last 30 days</p>
+          <p className="text-sm text-gray-400 mt-1">Últimos 30 días</p>
         </Card>
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Engagement Rate</h3>
+          <h3 className="text-sm font-medium text-gray-500">Tasa de Engagement</h3>
           <p className="text-2xl font-bold text-white">8.2%</p>
-          <p className="text-sm text-gray-400 mt-1">Avg. across platforms</p>
+          <p className="text-sm text-gray-400 mt-1">Promedio en todas las plataformas</p>
         </Card>
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Content Calendar</h3>
+          <h3 className="text-sm font-medium text-gray-500">Calendario de Contenido</h3>
           <p className="text-2xl font-bold text-white">85%</p>
-          <p className="text-sm text-gray-400 mt-1">On schedule</p>
+          <p className="text-sm text-gray-400 mt-1">En tiempo</p>
         </Card>
       </div>
 
@@ -95,7 +95,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Bar Chart */}
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h2 className="text-xl font-semibold mb-4 text-white">Content Performance</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">Rendimiento de Contenido</h2>
           <div ref={chartRef} className="h-64 flex items-end justify-between space-x-2">
             {barData.map((bar, index) => (
               <div
@@ -112,7 +112,7 @@ export default function AnalyticsPage() {
                 />
                 {hoveredBar === index && (
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white px-2 py-1 rounded text-sm whitespace-nowrap border border-[#333]">
-                    {bar.count} pieces
+                    {bar.count} piezas
                   </div>
                 )}
               </div>
@@ -127,7 +127,7 @@ export default function AnalyticsPage() {
 
         {/* Line Chart */}
         <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h2 className="text-xl font-semibold mb-4 text-white">Published Content by Week</h2>
+          <h2 className="text-xl font-semibold mb-4 text-white">Contenido Publicado por Semana</h2>
           <div className="h-64 relative">
             <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
               {/* Y-axis grid lines and labels */}
@@ -221,7 +221,7 @@ export default function AnalyticsPage() {
                       fill="white"
                       className="text-sm"
                     >
-                      {lineData[index].value} pieces
+                      {lineData[index].value} piezas
                     </text>
                   )}
                 </g>

@@ -25,11 +25,11 @@ const statusProgressColors = {
 };
 
 const statusTooltips = {
-  idea: 'Initial content ideas and concepts',
-  drafting: 'Content in writing or planning phase',
-  filming: 'Content being recorded or produced',
-  scheduled: 'Content ready to be published',
-  published: 'Content live and available to audience',
+  idea: 'Ideas y conceptos iniciales de contenido',
+  drafting: 'Contenido en fase de escritura o planificación',
+  filming: 'Contenido siendo grabado o producido',
+  scheduled: 'Contenido listo para ser publicado',
+  published: 'Contenido publicado y disponible para la audiencia',
 };
 
 const statusIcons = {
@@ -327,7 +327,7 @@ export default function Dashboard() {
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
         <div className="bg-[#1a1a1a] w-full max-w-md rounded-xl border border-white/10 shadow-xl p-6">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-medium text-white">Edit Content</h3>
+            <h3 className="text-lg font-medium text-white">Editar Contenido</h3>
             <button onClick={onClose} className="text-gray-400 hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -336,7 +336,7 @@ export default function Dashboard() {
           </div>
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Platform</label>
+              <label className="text-sm text-gray-400">Plataforma</label>
               <select
                 name="platform"
                 defaultValue={item.platform}
@@ -351,7 +351,7 @@ export default function Dashboard() {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Title</label>
+              <label className="text-sm text-gray-400">Título</label>
               <input
                 name="title"
                 type="text"
@@ -360,7 +360,7 @@ export default function Dashboard() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Description</label>
+              <label className="text-sm text-gray-400">Descripción</label>
               <textarea
                 name="description"
                 defaultValue={item.description}
@@ -369,7 +369,7 @@ export default function Dashboard() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Due Date</label>
+              <label className="text-sm text-gray-400">Fecha de Vencimiento</label>
               <input
                 name="dueDate"
                 type="date"
@@ -383,13 +383,13 @@ export default function Dashboard() {
                 onClick={onClose}
                 className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 type="submit"
                 className="px-4 py-2 text-sm bg-[#4CAF50] hover:bg-[#45a049] text-white rounded-lg transition-colors"
               >
-                Save Changes
+                Guardar Cambios
               </button>
             </div>
           </form>
@@ -493,9 +493,9 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
-              Content Board
+              Tablero de Contenido
             </h1>
-            <p className="text-gray-400 mt-1">Manage and organize your content ideas</p>
+            <p className="text-gray-400 mt-1">Gestiona y organiza tus ideas de contenido</p>
           </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
@@ -504,8 +504,8 @@ export default function Dashboard() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
-            <span className="hidden sm:inline">Add New Idea</span>
-            <span className="sm:hidden">Add</span>
+            <span className="hidden sm:inline">Agregar Nueva Idea</span>
+            <span className="sm:hidden">Agregar</span>
           </button>
         </div>
 
@@ -514,7 +514,7 @@ export default function Dashboard() {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search content..."
+              placeholder="Buscar contenido..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
@@ -539,13 +539,13 @@ export default function Dashboard() {
               onChange={(e) => setSelectedPlatform(e.target.value)}
               className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
             >
-              <option value="all">All Platforms</option>
+              <option value="all">Todas las Plataformas</option>
               <option value="YouTube">YouTube</option>
               <option value="TikTok">TikTok</option>
               <option value="Instagram">Instagram</option>
               <option value="LinkedIn">LinkedIn</option>
               <option value="Twitter">Twitter</option>
-              <option value="Other">Other</option>
+              <option value="Other">Otra</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
               <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -560,8 +560,8 @@ export default function Dashboard() {
               onChange={(e) => setSortBy(e.target.value as 'dueDate' | 'title')}
               className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
             >
-              <option value="dueDate">Sort by Due Date</option>
-              <option value="title">Sort by Title</option>
+              <option value="dueDate">Ordenar por Fecha de Vencimiento</option>
+              <option value="title">Ordenar por Título</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
               <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -571,7 +571,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span>Total Items:</span>
+            <span>Total de Elementos:</span>
             <span className="text-white font-medium">
               {Object.values(ideas).flat().length}
             </span>
@@ -621,7 +621,7 @@ export default function Dashboard() {
                 </div>
                 <span 
                   className="text-xs sm:text-sm text-white/60 bg-white/5 px-2 py-1 rounded-full flex-shrink-0 ml-2"
-                  aria-label={`${filteredItems.length} items`}
+                  aria-label={`${filteredItems.length} elementos`}
                 >
                   {filteredItems.length}
                 </span>
@@ -667,7 +667,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mt-1">
                         {item.dueDate && (
                           <span className={`text-xs px-2 py-0.5 rounded-full w-fit ${getDueDateColor(item.dueDate)} shrink-0`}>
-                            Due {new Date(item.dueDate).toLocaleDateString()}
+                            Vence {new Date(item.dueDate).toLocaleDateString()}
                           </span>
                         )}
                         
@@ -679,8 +679,8 @@ export default function Dashboard() {
                               setEditingCard(item.id);
                             }}
                             className="p-1 hover:bg-white/10 rounded-full shrink-0"
-                            title="Edit"
-                            aria-label={`Edit ${item.title}`}
+                            title="Editar"
+                            aria-label={`Editar ${item.title}`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
@@ -692,8 +692,8 @@ export default function Dashboard() {
                               // Handle duplicate
                             }}
                             className="p-1 hover:bg-white/10 rounded-full shrink-0"
-                            title="Duplicate"
-                            aria-label={`Duplicate ${item.title}`}
+                            title="Duplicar"
+                            aria-label={`Duplicar ${item.title}`}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                               <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />

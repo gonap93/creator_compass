@@ -21,8 +21,8 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
         </svg>
       ),
-      title: "Content Board",
-      description: "Organize your content pipeline with our intuitive board view. Drag and drop content pieces between 'Ideas', 'In Progress', and 'Ready to Publish' columns to maintain a clear workflow."
+      title: "Tablero de Contenido",
+      description: "Organiza tu pipeline de contenido con nuestro tablero intuitivo. Arrastra y suelta piezas de contenido entre las columnas 'Ideas', 'En Progreso' y 'Listo para Publicar' para mantener un flujo de trabajo claro."
     },
     {
       icon: (
@@ -30,8 +30,8 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       ),
-      title: "AI Content Assistant",
-      description: "Let our AI help you generate content ideas, write engaging captions, and suggest trending topics in your niche. Save hours of brainstorming and research time."
+      title: "Asistente de Contenido AI",
+      description: "Permítenos que nuestra IA te ayude a generar ideas de contenido, escribir descripciones atractivas y sugerir temas de tendencia en tu género. Ahorra horas de brainstorming y tiempo de investigación."
     },
     {
       icon: (
@@ -39,8 +39,8 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
       ),
-      title: "Performance Analytics",
-      description: "Track your content's performance across all platforms in one dashboard. Monitor engagement rates, audience growth, and identify your best-performing content types."
+      title: "Análisis de Rendimiento",
+      description: "Monitorea el rendimiento de tu contenido en todas las plataformas desde un solo panel. Rastrea tasas de engagement, crecimiento de audiencia e identifica tus mejores tipos de contenido."
     },
     {
       icon: (
@@ -48,8 +48,8 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      title: "Smart Scheduling",
-      description: "Schedule posts at optimal times based on your audience's activity patterns. Our AI analyzes historical data to suggest the best posting times for maximum engagement."
+      title: "Programación Inteligente",
+      description: "Programa publicaciones en los momentos óptimos basados en los patrones de actividad de tu audiencia. Nuestra IA analiza datos históricos para sugerir los mejores horarios de publicación para maximizar el engagement."
     },
     {
       icon: (
@@ -58,8 +58,8 @@ export default function Home() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16" />
         </svg>
       ),
-      title: "Cross-Platform Publishing",
-      description: "Create once, publish everywhere. Automatically adapt your content for different platforms like Instagram, Twitter, LinkedIn, and TikTok while maintaining your brand voice."
+      title: "Publicación Multiplataforma",
+      description: "Crea una vez, publica en todas partes. Adapta automáticamente tu contenido para diferentes plataformas como Instagram, Twitter, LinkedIn y TikTok manteniendo tu voz de marca."
     }
   ];
 
@@ -124,7 +124,7 @@ export default function Home() {
                 }}
                 className="text-gray-300 hover:text-white transition-colors font-bold"
               >
-                Features
+                Características
               </button>
               <button
                 onClick={() => {
@@ -132,7 +132,7 @@ export default function Home() {
                 }}
                 className="text-gray-300 hover:text-white transition-colors font-bold"
               >
-                Pricing
+                Precios
               </button>
               <button
                 onClick={() => {
@@ -140,7 +140,7 @@ export default function Home() {
                 }}
                 className="text-gray-300 hover:text-white transition-colors font-bold"
               >
-                Testimonials
+                Testimonios
               </button>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function Home() {
                   onClick={handleDashboardClick}
                   className="hidden md:block bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base"
                 >
-                  Go to Dashboard
+                  Ir al Panel
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/profile')}
@@ -177,10 +177,10 @@ export default function Home() {
             ) : (
               <>
                 <Link href="/signin" className="block text-gray-300 hover:text-white transition-colors px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base active:bg-white/10 rounded-lg touch-manipulation">
-                  Sign in
+                  Iniciar Sesión
                 </Link>
                 <Link href="/signup" className="block bg-[#4CAF50] text-white hover:bg-[#45a049] transition-colors px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base active:bg-[#3d8b40] touch-manipulation">
-                  Sign up
+                  Registrarse
                 </Link>
               </>
             )}
@@ -227,7 +227,7 @@ export default function Home() {
                 }}
                 className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
               >
-                Features
+                Características
               </button>
               <button
                 onClick={() => {
@@ -236,7 +236,7 @@ export default function Home() {
                 }}
                 className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
               >
-                Pricing
+                Precios
               </button>
               <button
                 onClick={() => {
@@ -245,7 +245,7 @@ export default function Home() {
                 }}
                 className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
               >
-                Testimonials
+                Testimonios
               </button>
               {user && (
                 <button
@@ -255,7 +255,7 @@ export default function Home() {
                   }}
                   className="block w-full text-left text-gray-300 hover:text-white transition-colors font-medium py-2"
                 >
-                  Go to Dashboard
+                  Ir al Panel
                 </button>
               )}
             </div>
@@ -286,10 +286,10 @@ export default function Home() {
           {/* Content */}
           <div className="relative z-10 max-w-[1200px] mx-auto text-center">
             <h1 className="text-[2.5rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
-              Organize Your Content<br className="hidden sm:block" />Journey
+              Planificá tus <span className="text-white">ideas.</span><br className="hidden sm:block" />Potenciá tus <span className="text-white">redes.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 sm:mb-16 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0">
-              Transform your creative ideas into a structured content strategy. Plan, track, and manage your content across all platforms in one place.
+              Transforma tus ideas creativas en una estrategia de contenido estructurada. Planifica, rastrea y gestiona tu contenido en todas las plataformas desde un solo lugar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-16 px-6 sm:px-0">
               {user ? (
@@ -297,7 +297,7 @@ export default function Home() {
                   onClick={handleDashboardClick}
                   className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                 >
-                  Go to Dashboard
+                  Ir al Panel
                 </button>
               ) : (
                 <>
@@ -305,13 +305,13 @@ export default function Home() {
                     href="/signup"
                     className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
                   >
-                    Get Started
+                    Comenzar
                   </Link>
                   <Link
                     href="/signin"
                     className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 active:bg-[#4CAF50]/20 touch-manipulation relative z-20"
                   >
-                    Sign In
+                    Iniciar Sesión
                   </Link>
                 </>
               )}
@@ -350,11 +350,11 @@ export default function Home() {
         </section>
 
         {/* How it Works Section */}
-        <section id="features" className="relative py-24 px-4">
+        <section id="features" className="relative py-18 px-4">
           <div className="absolute inset-0 bg-[#0a0a0a]" />
           <div className="relative z-10 max-w-7xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-20 text-white">
-              How It Works
+            <h2 className="text-4xl md:text-6xl font-bold text-center mb-20 text-white">
+            Tu nuevo partner creativo <br className="hidden sm:block" /> en acción
             </h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -488,11 +488,11 @@ export default function Home() {
         {/* Pricing Section */}
         <section id="pricing" className="py-24 px-4">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
-              Simple, Transparent Pricing
+            <h2 className="text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
+              Precios simples y transparentes
             </h2>
             <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-              Choose the plan that best fits your content creation needs
+              Elige el plan que mejor se adapte a tus necesidades de creación de contenido
             </p>
             
             {/* Billing Period Toggle */}
@@ -507,7 +507,7 @@ export default function Home() {
                         : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Monthly
+                    Mensual
                   </button>
                   <button
                     onClick={() => setBillingPeriod('yearly')}
@@ -517,11 +517,11 @@ export default function Home() {
                         : 'text-gray-400 hover:text-white'
                     }`}
                   >
-                    Yearly
+                    Anual
                   </button>
                 </div>
                 <span className="text-sm bg-[#4CAF50]/10 text-[#4CAF50] px-3 py-1 rounded-full">
-                  Save 20% Yearly
+                  Ahorra 20% Anualmente
                 </span>
               </div>
             </div>
@@ -531,38 +531,38 @@ export default function Home() {
               <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10 hover:border-[#4CAF50]/30 transition-all duration-300">
                 <div className="flex flex-col h-full">
                   <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Free</h3>
+                    <h3 className="text-2xl font-bold mb-4">Gratis</h3>
                     <div className="flex items-baseline gap-1 mb-6">
                       <span className="text-4xl font-bold">$0</span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                     </div>
-                    <p className="text-gray-400">Perfect for getting started with content planning</p>
+                    <p className="text-gray-400">Perfecto para comenzar con la planificación de contenido</p>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Up to 10 content ideas
+                      Hasta 10 ideas de contenido
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Basic analytics
+                      Análisis básico
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Single platform support
+                      Soporte para una plataforma
                     </li>
                   </ul>
                   <Link
                     href="/signup"
                     className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
                   >
-                    Get Started
+                    Comenzar
                   </Link>
                 </div>
               </div>
@@ -570,7 +570,7 @@ export default function Home() {
               {/* Pro Plan */}
               <div className="bg-[#1a1a1a] rounded-xl p-8 border-2 border-[#4CAF50] relative transform hover:scale-105 transition-all duration-300">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4CAF50] text-white px-4 py-1 rounded-full text-sm font-medium">
-                  Most Popular
+                  Más Popular
                 </div>
                 <div className="flex flex-col h-full">
                   <div className="mb-8">
@@ -579,41 +579,41 @@ export default function Home() {
                       <span className="text-4xl font-bold">
                         ${billingPeriod === 'monthly' ? '19' : '15'}
                       </span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                     </div>
-                    <p className="text-gray-400">For growing content creators</p>
+                    <p className="text-gray-400">Para creadores de contenido en crecimiento</p>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Unlimited content ideas
+                      Ideas de contenido ilimitadas
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Advanced analytics
+                      Análisis avanzado
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Multi-platform support
+                      Soporte multiplataforma
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Content calendar
+                      Calendario de contenido
                     </li>
                   </ul>
                   <Link
                     href="/signup"
                     className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
                   >
-                    Get Started
+                    Comenzar
                   </Link>
                 </div>
               </div>
@@ -622,46 +622,46 @@ export default function Home() {
               <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10 hover:border-[#4CAF50]/30 transition-all duration-300">
                 <div className="flex flex-col h-full">
                   <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Business</h3>
+                    <h3 className="text-2xl font-bold mb-4">Empresarial</h3>
                     <div className="flex items-baseline gap-1 mb-6">
                       <span className="text-4xl font-bold">
                         ${billingPeriod === 'monthly' ? '49' : '39'}
                       </span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'month' : 'year'}</span>
+                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                     </div>
-                    <p className="text-gray-400">For professional content teams</p>
+                    <p className="text-gray-400">Para equipos profesionales de contenido</p>
                   </div>
                   <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Everything in Pro
+                      Todo lo del plan Pro
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Team collaboration
+                      Colaboración en equipo
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Custom workflows
+                      Flujos de trabajo personalizados
                     </li>
                     <li className="flex items-center gap-2 text-gray-300">
                       <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
-                      Priority support
+                      Soporte prioritario
                     </li>
                   </ul>
                   <Link
                     href="/signup"
                     className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
                   >
-                    Get Started
+                    Comenzar
                   </Link>
                 </div>
               </div>
@@ -673,10 +673,10 @@ export default function Home() {
         <section id="testimonials" className="py-24 px-4 bg-[#1a1a1a]">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
-              What Creators Say
+              Lo que dicen los Creadores
             </h2>
             <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-              Join thousands of content creators who trust Creator Compass
+              Únete a miles de creadores de contenido que confían en Creator Compass
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Testimonial 1 */}
@@ -686,12 +686,12 @@ export default function Home() {
                     <span className="text-xl font-bold text-[#4CAF50]">S</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold">Sarah Johnson</h3>
-                    <p className="text-sm text-gray-400">Content Creator</p>
+                    <h3 className="font-semibold">Sofía Rodríguez</h3>
+                    <p className="text-sm text-gray-400">Creadora de Contenido</p>
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  &ldquo;Creator Compass has transformed how I manage my content. The organization tools are incredible, and the analytics help me understand what works.&rdquo;
+                  &ldquo;Creator Compass ha transformado la forma en que gestiono mi contenido. Las herramientas de organización son increíbles y los análisis me ayudan a entender qué funciona.&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -709,12 +709,12 @@ export default function Home() {
                     <span className="text-xl font-bold text-[#4CAF50]">M</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold">Michael Chen</h3>
+                    <h3 className="font-semibold">Martín González</h3>
                     <p className="text-sm text-gray-400">YouTuber</p>
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  &ldquo;The content board feature is a game-changer. I can finally keep track of all my video ideas and their progress in one place. The analytics are super helpful too!&rdquo;
+                  &ldquo;La función del tablero de contenido es revolucionaria. Finalmente puedo hacer un seguimiento de todas mis ideas de videos y su progreso en un solo lugar. ¡Los análisis también son súper útiles!&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -732,12 +732,12 @@ export default function Home() {
                     <span className="text-xl font-bold text-[#4CAF50]">A</span>
                   </div>
                   <div>
-                    <h3 className="font-semibold">Alex Rivera</h3>
-                    <p className="text-sm text-gray-400">Social Media Manager</p>
+                    <h3 className="font-semibold">Alejandro Martínez</h3>
+                    <p className="text-sm text-gray-400">Gerente de Redes Sociales</p>
                   </div>
                 </div>
                 <p className="text-gray-300 mb-6">
-                  &ldquo;Managing multiple social media accounts is so much easier now. The scheduling and analytics features save me hours every week. Worth every penny!&rdquo;
+                  &ldquo;Gestionar múltiples cuentas de redes sociales es mucho más fácil ahora. Las funciones de programación y análisis me ahorran horas cada semana. ¡Vale cada peso!&rdquo;
                 </p>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
