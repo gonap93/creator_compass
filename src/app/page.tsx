@@ -286,7 +286,7 @@ export default function Home() {
           {/* Content */}
           <div className="relative z-10 max-w-[1200px] mx-auto text-center">
             <h1 className="text-[2.5rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
-              Planificá tus <span className="text-white">ideas.</span><br className="hidden sm:block" />Potenciá tus <span className="text-white">redes.</span>
+              Planificá tus <span className="text-white">ideas.</span><br />Potenciá tus <span className="text-white">redes.</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 sm:mb-16 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0">
               Transforma tus ideas creativas en una estrategia de contenido estructurada. Planifica, rastrea y gestiona tu contenido en todas las plataformas desde un solo lugar.
