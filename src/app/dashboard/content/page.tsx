@@ -369,7 +369,7 @@ export default function Dashboard() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Fecha de Vencimiento</label>
+              <label className="text-sm text-gray-400">Fecha de Publicación</label>
               <input
                 name="dueDate"
                 type="date"
@@ -560,7 +560,7 @@ export default function Dashboard() {
               onChange={(e) => setSortBy(e.target.value as 'dueDate' | 'title')}
               className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
             >
-              <option value="dueDate">Ordenar por Fecha de Vencimiento</option>
+              <option value="dueDate">Ordenar por Fecha de Publicación</option>
               <option value="title">Ordenar por Título</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -667,7 +667,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mt-1">
                         {item.dueDate && (
                           <span className={`text-xs px-2 py-0.5 rounded-full w-fit ${getDueDateColor(item.dueDate)} shrink-0`}>
-                            Vence {new Date(item.dueDate).toLocaleDateString()}
+                            Publicación {new Date(item.dueDate).toLocaleDateString()}
                           </span>
                         )}
                         
