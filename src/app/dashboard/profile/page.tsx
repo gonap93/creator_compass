@@ -58,11 +58,8 @@ export default function ProfilePage() {
 
         {/* Social Media Section */}
         <section className="bg-[#1a1a1a] rounded-xl p-6 border border-[#4CAF50]/10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <h2 className="text-xl font-semibold">Plataformas Conectadas</h2>
-            <span className="text-xs text-gray-400 px-2 py-1 bg-[#2a2a2a] rounded-full">
-              Próximamente
-            </span>
           </div>
           <SocialMediaPlatforms />
           <p className="mt-4 text-sm text-gray-400">
@@ -72,11 +69,8 @@ export default function ProfilePage() {
 
         {/* Content Preferences Section */}
         <section className="bg-[#1a1a1a] rounded-xl p-6 border border-[#4CAF50]/10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <h2 className="text-xl font-semibold">Preferencias de Contenido</h2>
-            <span className="text-xs text-gray-400 px-2 py-1 bg-[#2a2a2a] rounded-full">
-              Próximamente
-            </span>
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-gray-800">
