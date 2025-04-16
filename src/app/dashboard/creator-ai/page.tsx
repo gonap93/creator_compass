@@ -68,7 +68,7 @@ export default function CreatorAIPage() {
     <div className="max-w-5xl mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-white mb-3">AI Content Recommendations</h1>
-        <p className="text-gray-400 text-lg">Get personalized content ideas based on any TikTok creator's style</p>
+        <p className="text-gray-400 text-lg">Get personalized content ideas based on any TikTok creator&apos;s style</p>
       </div>
       
       <form onSubmit={handleSubmit} className="mb-8">
