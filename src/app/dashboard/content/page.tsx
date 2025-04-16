@@ -137,6 +137,20 @@ const platformColors = {
   }
 } as const;
 
+// Add these utility functions at the top of the file, after the imports
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const formatDateForInput = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toISOString().split('T')[0];
+};
+
 export default function Dashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -297,11 +311,15 @@ export default function Dashboard() {
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>, item: ContentIdea) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const dueDateStr = formData.get('dueDate') as string;
+    // Create a date at noon UTC on the selected date to avoid timezone issues
+    const dueDate = new Date(dueDateStr + 'T12:00:00Z');
+    
     const updates = {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
       platform: formData.get('platform') as Platform,
-      dueDate: formData.get('dueDate') as string,
+      dueDate: dueDate.toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
@@ -373,7 +391,7 @@ export default function Dashboard() {
               <input
                 name="dueDate"
                 type="date"
-                defaultValue={item.dueDate.split('T')[0]}
+                defaultValue={formatDateForInput(item.dueDate)}
                 className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
               />
             </div>
@@ -504,7 +522,7 @@ export default function Dashboard() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
-            <span className="hidden sm:inline">Agregar Nueva Idea</span>
+            <span className="hidden sm:inline">Agregar Idea</span>
             <span className="sm:hidden">Agregar</span>
           </button>
         </div>
@@ -667,7 +685,7 @@ export default function Dashboard() {
                       <div className="flex items-center justify-between mt-1">
                         {item.dueDate && (
                           <span className={`text-xs px-2 py-0.5 rounded-full w-fit ${getDueDateColor(item.dueDate)} shrink-0`}>
-                            Publicación {new Date(item.dueDate).toLocaleDateString()}
+                            Publicación {formatDate(item.dueDate)}
                           </span>
                         )}
                         

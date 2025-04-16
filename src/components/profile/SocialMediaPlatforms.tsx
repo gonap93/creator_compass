@@ -37,6 +37,10 @@ export default function SocialMediaPlatforms() {
     instagram: '',
     tiktok: '',
   });
+  const [loading, setLoading] = useState<Record<string, boolean>>({
+    instagram: false,
+    tiktok: false,
+  });
 
   const handleUsernameChange = (platformId: string, value: string) => {
     setUsernames(prev => ({
@@ -49,8 +53,35 @@ export default function SocialMediaPlatforms() {
     const username = usernames[platformId];
     if (!username) return;
 
-    // TODO: Implement connection logic when endpoint is provided
-    console.log(`Connecting ${platformId} with username: ${username}`);
+    setLoading(prev => ({ ...prev, [platformId]: true }));
+
+    try {
+      const response = await fetch('/api/social/connect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        body: JSON.stringify({
+          platform: platformId,
+          username,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error connecting to ${platformId}`);
+      }
+
+      // Clear the input after successful connection
+      setUsernames(prev => ({
+        ...prev,
+        [platformId]: '',
+      }));
+    } catch (error) {
+      console.error('Error connecting platform:', error);
+    } finally {
+      setLoading(prev => ({ ...prev, [platformId]: false }));
+    }
   };
 
   return (
@@ -71,13 +102,14 @@ export default function SocialMediaPlatforms() {
               value={usernames[platform.id]}
               onChange={(e) => handleUsernameChange(platform.id, e.target.value)}
               className="flex-1 px-3 py-2 rounded-md bg-[#1a1a1a] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]"
+              disabled={loading[platform.id]}
             />
             <button
               onClick={() => handleConnect(platform.id)}
-              disabled={!usernames[platform.id]}
+              disabled={!usernames[platform.id] || loading[platform.id]}
               className="px-4 py-2 rounded-md bg-[#4CAF50] text-white font-medium hover:bg-[#45a049] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Conectar
+              {loading[platform.id] ? 'Connecting...' : 'Conectar'}
             </button>
           </div>
         </div>

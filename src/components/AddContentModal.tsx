@@ -46,8 +46,11 @@ export default function AddContentModal({ onClose, onAdd }: AddContentModalProps
     const description = formData.get('description') as string;
     const platform = formData.get('platform') as Platform;
     const goal = formData.get('goal') as ContentGoal;
-    const dueDate = formData.get('dueDate') as string;
+    const dueDateStr = formData.get('dueDate') as string;
     const tags = formData.get('tags') as string;
+
+    // Create a date at noon UTC to avoid timezone issues
+    const dueDate = new Date(dueDateStr + 'T12:00:00Z').toISOString();
 
     const contentData = {
       userId: auth.currentUser.uid,

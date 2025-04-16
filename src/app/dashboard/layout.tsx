@@ -38,6 +38,12 @@ export default function DashboardLayout({
       color: '#E91E63'
     },
     {
+      href: '/dashboard/creator-ai',
+      label: 'Creator AI',
+      icon: FiFileText,
+      color: '#9C27B0'
+    },
+    {
       href: '/dashboard/analytics',
       label: 'Analytics',
       icon: FiBarChart2,

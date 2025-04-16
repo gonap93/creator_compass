@@ -24,7 +24,7 @@ export default function Preview() {
     },
     {
       id: 'column-2',
-      title: 'Drafting',
+      title: 'Borrador',
       cards: [],
     },
     {

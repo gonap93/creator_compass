@@ -3,11 +3,14 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Search, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../../lib/utils";
 import { auth } from '@/lib/firebase/firebase';
 import { getUserContentIdeas } from '@/lib/firebase/contentUtils';
 import { ContentIdea } from '@/lib/types/content';
 import AddContentModal from '@/components/AddContentModal';
+import MiniCalendar from '@/components/MiniCalendar';
+import Sidebar from '@/components/calendar/Sidebar';
+import { getPlatformColor, getPlatformIcon, Platform } from '@/lib/utils/platformUtils';
 
 type ViewMode = 'week' | 'month' | 'year';
 
@@ -51,16 +54,51 @@ export default function CalendarPage() {
     return firstDay === 0 ? 6 : firstDay - 1; // Convert to Monday-based
   };
 
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentMonth(prev => {
-      const newDate = new Date(prev);
-      if (direction === 'prev') {
-        newDate.setMonth(prev.getMonth() - 1);
-      } else {
-        newDate.setMonth(prev.getMonth() + 1);
-      }
-      return newDate;
-    });
+  const formatDateRange = (start: Date, end: Date): string => {
+    const startMonth = start.toLocaleString('default', { month: 'short' });
+    const endMonth = end.toLocaleString('default', { month: 'short' });
+    const startDay = start.getDate();
+    const endDay = end.getDate();
+    const year = start.getFullYear();
+    
+    if (startMonth === endMonth) {
+      return `${startDay} - ${endDay} ${startMonth} ${year}`;
+    } else {
+      return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`;
+    }
+  };
+
+  const getNavigationTitle = (): string => {
+    switch (viewMode) {
+      case 'year':
+        return currentMonth.getFullYear().toString();
+      case 'month':
+        return currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+      case 'week':
+        const weekDates = getWeekDates(currentMonth);
+        return formatDateRange(weekDates[0], weekDates[6]);
+      default:
+        return '';
+    }
+  };
+
+  const navigateView = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentMonth);
+    
+    switch (viewMode) {
+      case 'year':
+        newDate.setFullYear(newDate.getFullYear() + (direction === 'next' ? 1 : -1));
+        break;
+      case 'month':
+        newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
+        break;
+      case 'week':
+        newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
+        break;
+    }
+    
+    setCurrentMonth(newDate);
+    setSelectedDate(newDate);
   };
 
   const getContentIdeasForDate = (date: Date): ContentIdea[] => {
@@ -87,15 +125,12 @@ export default function CalendarPage() {
     }).sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'idea': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'drafting': return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
-      case 'filming': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-      case 'scheduled': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'published': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
+  const getTomorrowContentIdeas = (): ContentIdea[] => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return contentIdeas.filter(idea => 
+      new Date(idea.dueDate).toDateString() === tomorrow.toDateString()
+    );
   };
 
   // New functions for week view
@@ -137,9 +172,21 @@ export default function CalendarPage() {
     });
   };
 
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+    setCurrentMonth(date);
+  };
+
+  const goToToday = () => {
+    const today = new Date();
+    setSelectedDate(today);
+    setCurrentMonth(today);
+  };
+
   const renderWeekView = () => {
     const weekDates = getWeekDates(currentMonth);
     const timeSlots = getTimeSlots();
+    const today = new Date();
 
     return (
       <div className="border border-border/50 rounded-lg bg-card/50">
@@ -153,7 +200,7 @@ export default function CalendarPage() {
               key={i}
               className={cn(
                 "p-4 text-center border-r border-border/50",
-                selectedDate.toDateString() === date.toDateString() && "bg-accent/20"
+                date.toDateString() === today.toDateString() && "bg-accent/20"
               )}
             >
               {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][i]}
@@ -178,36 +225,33 @@ export default function CalendarPage() {
                     key={dateIndex}
                     className={cn(
                       "p-2 border-r border-b border-border/50 min-h-[60px] relative",
-                      selectedDate.toDateString() === date.toDateString() && "bg-accent/10"
+                      date.toDateString() === today.toDateString() && "bg-accent/10"
                     )}
                   >
-                    {ideas.map((idea, ideaIndex) => (
-                      <div
-                        key={ideaIndex}
-                        className={cn(
-                          "absolute left-1 right-1 p-1 rounded text-xs",
-                          getStatusColor(idea.status)
-                        )}
-                        style={{
-                          top: `${(new Date(idea.dueDate).getMinutes() / 60) * 100}%`,
-                          minHeight: '24px'
-                        }}
-                      >
-                        <div className="flex items-center gap-1">
-                          {idea.platform === 'Instagram' && (
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
-                            </svg>
+                    {ideas.map((idea, ideaIndex) => {
+                      const eventHeight = 24; // height in pixels
+                      const verticalGap = 4; // gap between events
+                      const topOffset = ideaIndex * (eventHeight + verticalGap);
+                      
+                      return (
+                        <div
+                          key={ideaIndex}
+                          className={cn(
+                            "absolute left-1 right-1 p-1 rounded text-xs",
+                            getPlatformColor(idea.platform as Platform)
                           )}
-                          {idea.platform === 'TikTok' && (
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
-                            </svg>
-                          )}
-                          <span className="truncate">{idea.title}</span>
+                          style={{
+                            top: `${topOffset}px`,
+                            height: `${eventHeight}px`
+                          }}
+                        >
+                          <div className="flex items-center gap-1 h-full overflow-hidden">
+                            {getPlatformIcon(idea.platform as Platform)}
+                            <span className="truncate">{idea.title}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 );
               })}
@@ -256,9 +300,15 @@ export default function CalendarPage() {
                 {ideas.map((idea, ideaIndex) => (
                   <div 
                     key={ideaIndex}
-                    className={`text-xs p-1 rounded truncate ${getStatusColor(idea.status)}`}
+                    className={cn(
+                      "text-xs p-1 rounded truncate",
+                      getPlatformColor(idea.platform as Platform)
+                    )}
                   >
-                    {idea.title}
+                    <div className="flex items-center gap-1">
+                      {getPlatformIcon(idea.platform as Platform)}
+                      <span className="truncate">{idea.title}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -304,79 +354,59 @@ export default function CalendarPage() {
     </div>
   );
 
+  // Mock vacations data - replace with real data later
+  const mockVacations = [
+    {
+      name: "Summer Break",
+      startDate: new Date(2024, 6, 1), // July 1
+      endDate: new Date(2024, 6, 15), // July 15
+    },
+    {
+      name: "Winter Holiday",
+      startDate: new Date(2024, 11, 20), // December 20
+      endDate: new Date(2024, 11, 31), // December 31
+    },
+  ];
+
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <div className="w-64 border-r border-border/50 p-4 flex flex-col bg-card/50">
-        {/* Today's Info */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Today Info</h2>
-          <div className="space-y-3">
-            {getTodayContentIdeas().map((idea, index) => (
-              <div key={index} className={`p-3 rounded-lg ${getStatusColor(idea.status)}`}>
-                <h3 className="font-medium text-sm">{idea.title}</h3>
-                <p className="text-xs opacity-80 mt-1">{idea.description}</p>
-              </div>
-            ))}
-            {getTodayContentIdeas().length === 0 && (
-              <p className="text-sm text-gray-400">No content scheduled for today</p>
-            )}
-          </div>
-        </div>
-
-        {/* Next Days Info */}
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Next Days Info</h2>
-          <div className="space-y-3">
-            {getUpcomingContentIdeas().map((idea, index) => (
-              <div key={index} className={`p-3 rounded-lg ${getStatusColor(idea.status)}`}>
-                <div className="flex justify-between items-center mb-1">
-                  <h3 className="font-medium text-sm">{idea.title}</h3>
-                  <span className="text-xs opacity-80">
-                    {new Date(idea.dueDate).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-xs opacity-80">{idea.description}</p>
-              </div>
-            ))}
-            {getUpcomingContentIdeas().length === 0 && (
-              <p className="text-sm text-gray-400">No upcoming content scheduled</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 overflow-auto">
+    <div className="flex h-full">
+      <Sidebar
+        selectedDate={selectedDate}
+        onDateSelect={handleDateSelect}
+        todayEvents={getTodayContentIdeas()}
+        tomorrowEvents={getTomorrowContentIdeas()}
+        vacations={mockVacations}
+      />
+      <div className="flex-1 p-6">
+        {/* Existing calendar content */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Calendario de Contenido</h1>
+            <h1 className="text-2xl font-semibold">Calendar</h1>
             <div className="flex items-center gap-2">
-              <button 
-                onClick={() => navigateMonth('prev')}
-                className="p-2 hover:bg-accent/50 rounded-lg"
+              <button
+                onClick={() => navigateView('prev')}
+                className="p-2 hover:bg-accent/20 rounded"
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-lg">
-                {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+              <span className="text-lg font-medium min-w-[200px] text-center">
+                {getNavigationTitle()}
               </span>
-              <button 
-                onClick={() => navigateMonth('next')}
-                className="p-2 hover:bg-accent/50 rounded-lg"
+              <button
+                onClick={() => navigateView('next')}
+                className="p-2 hover:bg-accent/20 rounded"
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {/* View Mode Filter */}
-            <div className="bg-[#1a1a1a] rounded-lg p-1 flex items-center">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-accent/20 rounded-lg p-1">
               <button
                 onClick={() => setViewMode('week')}
                 className={cn(
-                  "px-3 py-1.5 rounded text-sm font-medium transition-colors",
-                  viewMode === 'week' ? "bg-[#4CAF50] text-white" : "text-gray-400 hover:text-white"
+                  "px-3 py-1 rounded-md text-sm",
+                  viewMode === 'week' && "bg-background"
                 )}
               >
                 Week
@@ -384,8 +414,8 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('month')}
                 className={cn(
-                  "px-3 py-1.5 rounded text-sm font-medium transition-colors",
-                  viewMode === 'month' ? "bg-[#4CAF50] text-white" : "text-gray-400 hover:text-white"
+                  "px-3 py-1 rounded-md text-sm",
+                  viewMode === 'month' && "bg-background"
                 )}
               >
                 Month
@@ -393,58 +423,45 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('year')}
                 className={cn(
-                  "px-3 py-1.5 rounded text-sm font-medium transition-colors",
-                  viewMode === 'year' ? "bg-[#4CAF50] text-white" : "text-gray-400 hover:text-white"
+                  "px-3 py-1 rounded-md text-sm",
+                  viewMode === 'year' && "bg-background"
                 )}
               >
                 Year
               </button>
             </div>
-            <button 
-              onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2 bg-[#4CAF50] text-white rounded-lg hover:bg-[#45a049] flex items-center"
+            <button
+              onClick={goToToday}
+              className="px-3 py-1 text-sm bg-accent/20 hover:bg-accent/30 rounded-md"
             >
-              Agregar evento de contenido
-              <Plus className="h-4 w-4 ml-2" />
+              Today
+            </button>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm"
+            >
+              <Plus className="w-3 h-3" />
+              Add
             </button>
           </div>
         </div>
 
-        {/* Calendar View */}
         {viewMode === 'week' && renderWeekView()}
         {viewMode === 'month' && renderMonthView()}
         {viewMode === 'year' && renderYearView()}
-
-        {/* Selected Date Events */}
-        {getContentIdeasForDate(selectedDate).length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-lg font-medium mb-4">
-              Content Ideas for {selectedDate.toLocaleDateString()}
-            </h2>
-            <div className="space-y-3">
-              {getContentIdeasForDate(selectedDate).map((idea, i) => (
-                <div key={i} className={`p-4 rounded-lg ${getStatusColor(idea.status)}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium">{idea.title}</span>
-                    <span className="text-sm opacity-80 capitalize">({idea.status})</span>
-                  </div>
-                  <p className="text-sm opacity-80">{idea.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Add Content Modal */}
       {isAddModalOpen && (
         <AddContentModal
           onClose={() => setIsAddModalOpen(false)}
-          onAdd={async () => {
+          onAdd={() => {
+            setIsAddModalOpen(false);
+            // Refresh content ideas
             if (auth.currentUser) {
-              const ideas = await getUserContentIdeas(auth.currentUser.uid);
-              const allIdeas = Object.values(ideas).flat();
-              setContentIdeas(allIdeas);
+              getUserContentIdeas(auth.currentUser.uid).then(ideas => {
+                const allIdeas = Object.values(ideas).flat();
+                setContentIdeas(allIdeas);
+              });
             }
           }}
         />
