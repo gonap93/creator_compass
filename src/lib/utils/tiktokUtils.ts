@@ -8,6 +8,7 @@ export interface TikTokProfile {
   fans: number;
   heart: number;
   video: number;
+  avatar_url?: string;
 }
 
 export interface TikTokVideo {
@@ -20,6 +21,7 @@ export interface TikTokVideo {
     cover: string;
   };
   thumbnail_url?: string;
+  video_url?: string;
   stats?: {
     playCount: number;
     diggCount: number;
