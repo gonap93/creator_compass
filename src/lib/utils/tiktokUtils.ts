@@ -12,17 +12,24 @@ export interface TikTokProfile {
 
 export interface TikTokVideo {
   id: string;
-  username: string;
-  caption: string;
-  hashtags: string[];
-  likes: number;
-  comments: number;
-  shares: number;
-  views: number;
-  publish_date: string;
-  music: string;
-  thumbnail_url: string;
-  video_url: string;
+  description?: string;
+  caption?: string;
+  createTime?: number;
+  publish_date?: string;
+  video?: {
+    cover: string;
+  };
+  thumbnail_url?: string;
+  stats?: {
+    playCount: number;
+    diggCount: number;
+    commentCount: number;
+    shareCount: number;
+  };
+  views?: number;
+  likes?: number;
+  comments?: number;
+  shares?: number;
 }
 
 async function handleApiResponse<T>(response: Response): Promise<T> {
