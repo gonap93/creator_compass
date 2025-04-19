@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { UserProfile, getUserProfile, updateUserProfile, createUserProfile } from '@/lib/firebase/profileUtils';
-import { handleUserSignedIn } from '@/lib/firebase/authUtils';
+import { AuthService } from '@/lib/services/auth.service';
 
 export default function ProfileForm() {
   const { user } = useAuth();
@@ -37,7 +37,8 @@ export default function ProfileForm() {
         });
       } else {
         console.log('No profile found, creating new profile...');
-        await handleUserSignedIn(user);
+        const authService = AuthService.getInstance();
+        await authService.handleUserSignedIn(user);
       }
     } catch (error) {
       console.error('Error loading profile:', error);

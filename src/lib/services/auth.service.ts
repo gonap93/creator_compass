@@ -60,7 +60,7 @@ export class AuthService {
     }
   }
 
-  private async handleUserSignedIn(user: User): Promise<void> {
+  public async handleUserSignedIn(user: User): Promise<void> {
     try {
       const existingProfile = await getUserProfile(user.uid);
       
