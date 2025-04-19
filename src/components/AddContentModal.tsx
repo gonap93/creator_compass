@@ -6,11 +6,12 @@ import { addContentIdea } from '@/lib/firebase/contentUtils';
 import { Platform, ContentGoal, ContentStatus } from '@/lib/types/content';
 
 interface AddContentModalProps {
+  isOpen: boolean;
   onClose: () => void;
   onAdd: () => void;
 }
 
-export default function AddContentModal({ onClose, onAdd }: AddContentModalProps) {
+export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -85,8 +86,15 @@ export default function AddContentModal({ onClose, onAdd }: AddContentModalProps
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+  return isOpen ? (
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div className="bg-[#1a1a1a] rounded-xl p-6 w-full max-w-lg border border-[#4CAF50]/10">
         <h2 className="text-xl font-bold mb-6">Add New Content Idea</h2>
 
@@ -211,5 +219,5 @@ export default function AddContentModal({ onClose, onAdd }: AddContentModalProps
         </form>
       </div>
     </div>
-  );
+  ) : null;
 } 

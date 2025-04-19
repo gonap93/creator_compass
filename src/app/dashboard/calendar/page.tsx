@@ -8,8 +8,6 @@ import { auth } from '@/lib/firebase/firebase';
 import { getUserContentIdeas } from '@/lib/firebase/contentUtils';
 import { ContentIdea } from '@/lib/types/content';
 import AddContentModal from '@/components/AddContentModal';
-import MiniCalendar from '@/components/MiniCalendar';
-import Sidebar from '@/components/calendar/Sidebar';
 import { getPlatformColor, getPlatformIcon, Platform } from '@/lib/utils/platformUtils';
 
 type ViewMode = 'week' | 'month' | 'year';
@@ -189,21 +187,24 @@ export default function CalendarPage() {
     const today = new Date();
 
     return (
-      <div className="border border-border/50 rounded-lg bg-card/50">
+      <div className="border border-[#333] rounded-lg bg-[#1a1a1a]">
         {/* Header with days */}
-        <div className="grid grid-cols-8 text-sm font-medium border-b border-border/50">
+        <div className="grid grid-cols-8 text-sm font-medium border-b border-[#333]">
           {/* Empty cell for time column */}
-          <div className="p-4 text-center border-r border-border/50"></div>
+          <div className="p-4 text-center border-r border-[#333] text-gray-400"></div>
           {/* Day columns */}
           {weekDates.map((date, i) => (
             <div 
               key={i}
               className={cn(
-                "p-4 text-center border-r border-border/50",
-                date.toDateString() === today.toDateString() && "bg-accent/20"
+                "p-4 text-center border-r border-[#333] text-white",
+                date.toDateString() === today.toDateString() && "bg-[#4CAF50]/10"
               )}
             >
               {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][i]}
+              <div className="text-xs text-gray-400 mt-1">
+                {date.getDate()}
+              </div>
             </div>
           ))}
         </div>
@@ -213,7 +214,7 @@ export default function CalendarPage() {
           {timeSlots.map((slot, slotIndex) => (
             <div key={slotIndex} className="grid grid-cols-8">
               {/* Time marker */}
-              <div className="p-2 text-xs text-gray-400 border-r border-border/50 text-center">
+              <div className="p-2 text-xs text-gray-400 border-r border-[#333] text-center">
                 {formatTime(slot.hour, slot.minute)}
               </div>
               
@@ -224,34 +225,29 @@ export default function CalendarPage() {
                   <div 
                     key={dateIndex}
                     className={cn(
-                      "p-2 border-r border-b border-border/50 min-h-[60px] relative",
-                      date.toDateString() === today.toDateString() && "bg-accent/10"
+                      "p-2 border-r border-b border-[#333] min-h-[60px] relative",
+                      date.toDateString() === today.toDateString() && "bg-[#4CAF50]/5"
                     )}
                   >
-                    {ideas.map((idea, ideaIndex) => {
-                      const eventHeight = 24; // height in pixels
-                      const verticalGap = 4; // gap between events
-                      const topOffset = ideaIndex * (eventHeight + verticalGap);
-                      
-                      return (
-                        <div
-                          key={ideaIndex}
-                          className={cn(
-                            "absolute left-1 right-1 p-1 rounded text-xs",
-                            getPlatformColor(idea.platform as Platform)
-                          )}
-                          style={{
-                            top: `${topOffset}px`,
-                            height: `${eventHeight}px`
-                          }}
-                        >
-                          <div className="flex items-center gap-1 h-full overflow-hidden">
-                            {getPlatformIcon(idea.platform as Platform)}
-                            <span className="truncate">{idea.title}</span>
-                          </div>
+                    {ideas.map((idea, ideaIndex) => (
+                      <div
+                        key={ideaIndex}
+                        className={cn(
+                          "absolute left-1 right-1 p-1 rounded text-xs",
+                          getPlatformColor(idea.platform as Platform),
+                          "hover:opacity-90 transition-opacity cursor-pointer"
+                        )}
+                        style={{
+                          top: `${ideaIndex * 28}px`,
+                          height: '24px'
+                        }}
+                      >
+                        <div className="flex items-center gap-1 h-full overflow-hidden">
+                          {getPlatformIcon(idea.platform as Platform)}
+                          <span className="truncate text-white">{idea.title}</span>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 );
               })}
@@ -262,80 +258,94 @@ export default function CalendarPage() {
     );
   };
 
-  const renderMonthView = () => (
-    <div className="border border-border/50 rounded-lg p-6 bg-card/50">
-      <div className="grid grid-cols-7 text-sm font-medium mb-4 text-center">
-        <div>Lunes</div>
-        <div>Martes</div>
-        <div>Miércoles</div>
-        <div>Jueves</div>
-        <div>Viernes</div>
-        <div>Sábado</div>
-        <div>Domingo</div>
-      </div>
-      <div className="grid grid-cols-7 gap-2">
-        {Array.from({ length: getFirstDayOfMonth(currentMonth) }, (_, i) => (
-          <div key={`empty-${i}`} className="h-24" />
-        ))}
-        
-        {Array.from({ length: getDaysInMonth(currentMonth) }, (_, i) => {
-          const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1);
-          const ideas = getContentIdeasForDate(date);
-          
-          return (
-            <div
-              key={i}
-              className={cn(
-                "h-24 p-2 border border-border/50 rounded-lg",
-                selectedDate.getDate() === i + 1 && 
-                selectedDate.getMonth() === currentMonth.getMonth() && 
-                selectedDate.getFullYear() === currentMonth.getFullYear() && 
-                "bg-accent/50",
-                "hover:bg-accent/30 cursor-pointer"
-              )}
-              onClick={() => setSelectedDate(date)}
-            >
-              <div className="font-medium mb-1">{i + 1}</div>
-              <div className="space-y-1">
-                {ideas.map((idea, ideaIndex) => (
-                  <div 
-                    key={ideaIndex}
-                    className={cn(
-                      "text-xs p-1 rounded truncate",
-                      getPlatformColor(idea.platform as Platform)
-                    )}
-                  >
-                    <div className="flex items-center gap-1">
-                      {getPlatformIcon(idea.platform as Platform)}
-                      <span className="truncate">{idea.title}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+  const renderMonthView = () => {
+    const daysInMonth = getDaysInMonth(currentMonth);
+    const firstDayOfMonth = getFirstDayOfMonth(currentMonth);
+    const today = new Date();
+    
+    return (
+      <div className="border border-[#333] rounded-lg bg-[#1a1a1a]">
+        {/* Header */}
+        <div className="grid grid-cols-7 text-sm font-medium border-b border-[#333]">
+          {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day, i) => (
+            <div key={i} className="p-4 text-center border-r border-[#333] text-white last:border-r-0">
+              {day}
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Calendar grid */}
+        <div className="grid grid-cols-7">
+          {/* Empty cells for days before the first day of the month */}
+          {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+            <div key={`empty-${i}`} className="p-2 border-r border-b border-[#333] min-h-[120px]" />
+          ))}
+
+          {/* Days of the month */}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1);
+            const isToday = date.toDateString() === today.toDateString();
+            const ideas = getContentIdeasForDate(date);
+
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "p-2 border-r border-b border-[#333] min-h-[120px] relative",
+                  isToday && "bg-[#4CAF50]/5",
+                  (i + firstDayOfMonth + 1) % 7 === 0 && "border-r-0"
+                )}
+              >
+                <span className={cn(
+                  "inline-block w-6 h-6 text-center rounded-full text-sm",
+                  isToday && "bg-[#4CAF50] text-white"
+                )}>
+                  {i + 1}
+                </span>
+                <div className="mt-2 space-y-1">
+                  {ideas.map((idea, ideaIndex) => (
+                    <div
+                      key={ideaIndex}
+                      className={cn(
+                        "p-1 rounded text-xs",
+                        getPlatformColor(idea.platform as Platform),
+                        "hover:opacity-90 transition-opacity cursor-pointer"
+                      )}
+                    >
+                      <div className="flex items-center gap-1">
+                        {getPlatformIcon(idea.platform as Platform)}
+                        <span className="truncate text-white">{idea.title}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderYearView = () => (
-    <div className="border border-border/50 rounded-lg p-6 bg-card/50">
+    <div className="border border-[#333] rounded-lg bg-[#1a1a1a] p-6">
       <div className="grid grid-cols-3 gap-6">
         {getMonthsInYear(currentMonth.getFullYear()).map((date, monthIndex) => (
           <div key={monthIndex} className="space-y-2">
-            <h3 className="font-medium">{months[monthIndex]}</h3>
+            <h3 className="font-medium text-white">{months[monthIndex]}</h3>
             <div className="grid grid-cols-7 gap-1">
               {Array.from({ length: getDaysInMonth(date) }, (_, i) => {
                 const dayDate = new Date(date.getFullYear(), date.getMonth(), i + 1);
                 const hasEvents = getContentIdeasForDate(dayDate).length > 0;
+                const isToday = dayDate.toDateString() === new Date().toDateString();
                 return (
                   <div
                     key={i}
                     className={cn(
-                      "h-6 w-6 flex items-center justify-center text-xs rounded",
+                      "h-6 w-6 flex items-center justify-center text-xs rounded cursor-pointer hover:bg-[#4CAF50]/10 transition-colors",
                       hasEvents && "bg-[#4CAF50]/20 text-[#4CAF50]",
-                      selectedDate.toDateString() === dayDate.toDateString() && "bg-accent/50"
+                      isToday && "ring-2 ring-[#4CAF50]",
+                      selectedDate.toDateString() === dayDate.toDateString() && "bg-[#4CAF50]/30"
                     )}
                     onClick={() => {
                       setSelectedDate(dayDate);
@@ -354,59 +364,69 @@ export default function CalendarPage() {
     </div>
   );
 
-  // Mock vacations data - replace with real data later
-  const mockVacations = [
-    {
-      name: "Summer Break",
-      startDate: new Date(2024, 6, 1), // July 1
-      endDate: new Date(2024, 6, 15), // July 15
-    },
-    {
-      name: "Winter Holiday",
-      startDate: new Date(2024, 11, 20), // December 20
-      endDate: new Date(2024, 11, 31), // December 31
-    },
-  ];
+  const renderMiniCalendar = () => {
+    const daysInMonth = getDaysInMonth(currentMonth);
+    const firstDayOfMonth = getFirstDayOfMonth(currentMonth);
+    
+    return (
+      <div className="mb-8">
+        <h2 className="text-xl mb-4">{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
+        <div className="grid grid-cols-7 gap-1 text-center text-sm mb-2">
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, i) => (
+            <div key={i} className="text-gray-400">{day}</div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+            <div key={`empty-${i}`} className="h-8" />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, i) => {
+            const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1);
+            const isToday = date.toDateString() === new Date().toDateString();
+            const isSelected = date.toDateString() === selectedDate.toDateString();
+            
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "h-8 flex items-center justify-center rounded cursor-pointer hover:bg-gray-700/50",
+                  isToday && "bg-blue-500/20",
+                  isSelected && "ring-2 ring-blue-500"
+                )}
+                onClick={() => setSelectedDate(date)}
+              >
+                {i + 1}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
-  return (
-    <div className="flex h-full">
-      <Sidebar
-        selectedDate={selectedDate}
-        onDateSelect={handleDateSelect}
-        todayEvents={getTodayContentIdeas()}
-        tomorrowEvents={getTomorrowContentIdeas()}
-        vacations={mockVacations}
-      />
-      <div className="flex-1 p-6">
-        {/* Existing calendar content */}
+  const renderMainCalendar = () => {
+    return (
+      <div className="flex-1">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-semibold">Calendar</h1>
+            <h1 className="text-2xl">Calendar</h1>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => navigateView('prev')}
-                className="p-2 hover:bg-accent/20 rounded"
-              >
-                <ChevronLeft className="w-4 h-4" />
+              <button onClick={() => navigateView('prev')} className="p-2">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="text-lg font-medium min-w-[200px] text-center">
-                {getNavigationTitle()}
-              </span>
-              <button
-                onClick={() => navigateView('next')}
-                className="p-2 hover:bg-accent/20 rounded"
-              >
-                <ChevronRight className="w-4 h-4" />
+              <span className="text-lg">{getNavigationTitle()}</span>
+              <button onClick={() => navigateView('next')} className="p-2">
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-accent/20 rounded-lg p-1">
+          <div className="flex items-center gap-4">
+            <div className="flex rounded-lg bg-gray-800">
               <button
                 onClick={() => setViewMode('week')}
                 className={cn(
-                  "px-3 py-1 rounded-md text-sm",
-                  viewMode === 'week' && "bg-background"
+                  "px-4 py-2 rounded-l-lg",
+                  viewMode === 'week' && "bg-gray-700"
                 )}
               >
                 Week
@@ -414,8 +434,8 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('month')}
                 className={cn(
-                  "px-3 py-1 rounded-md text-sm",
-                  viewMode === 'month' && "bg-background"
+                  "px-4 py-2",
+                  viewMode === 'month' && "bg-gray-700"
                 )}
               >
                 Month
@@ -423,8 +443,8 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('year')}
                 className={cn(
-                  "px-3 py-1 rounded-md text-sm",
-                  viewMode === 'year' && "bg-background"
+                  "px-4 py-2 rounded-r-lg",
+                  viewMode === 'year' && "bg-gray-700"
                 )}
               >
                 Year
@@ -432,40 +452,92 @@ export default function CalendarPage() {
             </div>
             <button
               onClick={goToToday}
-              className="px-3 py-1 text-sm bg-accent/20 hover:bg-accent/30 rounded-md"
+              className="px-4 py-2 rounded-lg hover:bg-gray-700"
             >
               Today
             </button>
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm"
+              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 flex items-center gap-2"
             >
-              <Plus className="w-3 h-3" />
-              Add
+              <Plus className="w-4 h-4" /> Add
             </button>
           </div>
         </div>
 
+        {/* Render the appropriate view based on viewMode */}
         {viewMode === 'week' && renderWeekView()}
         {viewMode === 'month' && renderMonthView()}
         {viewMode === 'year' && renderYearView()}
       </div>
+    );
+  };
 
-      {isAddModalOpen && (
-        <AddContentModal
-          onClose={() => setIsAddModalOpen(false)}
-          onAdd={() => {
-            setIsAddModalOpen(false);
-            // Refresh content ideas
-            if (auth.currentUser) {
-              getUserContentIdeas(auth.currentUser.uid).then(ideas => {
-                const allIdeas = Object.values(ideas).flat();
-                setContentIdeas(allIdeas);
-              });
-            }
-          }}
-        />
-      )}
+  return (
+    <div className="flex gap-8 p-6">
+      {/* Left Sidebar */}
+      <div className="w-80">
+        <div className="border border-[#333] rounded-lg bg-[#1a1a1a] p-6 space-y-8">
+          {renderMiniCalendar()}
+
+          {/* Today's Events */}
+          <div>
+            <h3 className="text-lg font-medium mb-3">Today</h3>
+            <div className="space-y-2">
+              {getTodayContentIdeas().map((idea, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-2"
+                >
+                  <div className={cn(
+                    "flex items-center gap-2",
+                    idea.platform.toLowerCase() === 'tiktok' && "text-blue-400",
+                    idea.platform.toLowerCase() === 'instagram' && "text-purple-400"
+                  )}>
+                    {getPlatformIcon(idea.platform as Platform)}
+                    <span>{idea.title}</span>
+                  </div>
+                  <span className="text-sm text-gray-400">
+                    {new Date(idea.dueDate).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                  </span>
+                </div>
+              ))}
+              {getTodayContentIdeas().length === 0 && (
+                <div className="text-gray-400">No events scheduled</div>
+              )}
+            </div>
+          </div>
+
+          {/* Tomorrow */}
+          <div>
+            <h3 className="text-lg font-medium mb-3">Tomorrow</h3>
+            <div className="text-gray-400">
+              No events scheduled
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Calendar */}
+      {renderMainCalendar()}
+
+      {/* Add Content Modal */}
+      <AddContentModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={async () => {
+          if (auth.currentUser) {
+            const userIdeas = await getUserContentIdeas(auth.currentUser.uid);
+            const allIdeas = Object.values(userIdeas).flat();
+            setContentIdeas(allIdeas);
+          }
+          setIsAddModalOpen(false);
+        }}
+      />
     </div>
   );
 } 
