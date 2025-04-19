@@ -762,17 +762,16 @@ export default function Dashboard() {
       )}
 
       {/* Add Content Modal */}
-      {isAddModalOpen && (
-        <AddContentModal
-          onClose={() => setIsAddModalOpen(false)}
-          onAdd={async () => {
-            if (auth.currentUser) {
-              const userIdeas = await getUserContentIdeas(auth.currentUser.uid);
-              setIdeas(userIdeas);
-            }
-          }}
-        />
-      )}
+      <AddContentModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={async () => {
+          if (auth.currentUser) {
+            const userIdeas = await getUserContentIdeas(auth.currentUser.uid);
+            setIdeas(userIdeas);
+          }
+        }}
+      />
 
       {/* Add EditModal at the bottom of the return statement, before the closing tag */}
       {editingCard && (
