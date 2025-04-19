@@ -94,7 +94,11 @@ export default function AnalyticsPage() {
     );
   }
 
-  const sortedVideos = [...videos].sort((a, b) => b[selectedMetric] - a[selectedMetric]);
+  const sortedVideos = [...videos].sort((a, b) => {
+    const aValue = (a[selectedMetric] as number) ?? 0;
+    const bValue = (b[selectedMetric] as number) ?? 0;
+    return bValue - aValue;
+  });
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -191,12 +195,12 @@ export default function AnalyticsPage() {
                   <div className="flex-grow">
                     <p className="font-medium line-clamp-2 text-white">{video.caption}</p>
                     <p className="text-sm text-gray-400">
-                      {new Date(video.publish_date).toLocaleDateString()}
+                      {video.publish_date ? new Date(video.publish_date).toLocaleDateString() : 'No date available'}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xl font-bold text-white">
-                      {video[selectedMetric].toLocaleString()}
+                      {(video[selectedMetric] ?? 0).toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-400">
                       {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
