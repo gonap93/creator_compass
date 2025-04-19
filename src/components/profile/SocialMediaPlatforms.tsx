@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { updateUserProfile, getUserProfile } from '@/lib/firebase/profileUtils';
 
 interface Platform {
   id: string;
@@ -33,6 +35,7 @@ const platforms: Platform[] = [
 ];
 
 export default function SocialMediaPlatforms() {
+  const { user } = useAuth();
   const [usernames, setUsernames] = useState<Record<string, string>>({
     instagram: '',
     tiktok: '',
@@ -41,44 +44,125 @@ export default function SocialMediaPlatforms() {
     instagram: false,
     tiktok: false,
   });
+  const [connectionStatus, setConnectionStatus] = useState<Record<string, { success: boolean; message: string }>>({
+    instagram: { success: false, message: '' },
+    tiktok: { success: false, message: '' },
+  });
+
+  // Load existing social media handles
+  useEffect(() => {
+    const loadSocialMedia = async () => {
+      if (!user) return;
+      
+      try {
+        const profile = await getUserProfile(user.uid);
+        if (profile?.socialMedia) {
+          setUsernames(prev => ({
+            ...prev,
+            ...profile.socialMedia
+          }));
+          
+          // Set connection status for existing connections
+          const newStatus: Record<string, { success: boolean; message: string }> = {};
+          Object.entries(profile.socialMedia).forEach(([platform, username]) => {
+            if (username) {
+              newStatus[platform] = {
+                success: true,
+                message: `Connected to ${platforms.find(p => p.id === platform)?.name}`
+              };
+            }
+          });
+          setConnectionStatus(prev => ({
+            ...prev,
+            ...newStatus
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading social media handles:', error);
+      }
+    };
+
+    loadSocialMedia();
+  }, [user]);
 
   const handleUsernameChange = (platformId: string, value: string) => {
     setUsernames(prev => ({
       ...prev,
       [platformId]: value,
     }));
+    
+    // Reset connection status when username changes
+    setConnectionStatus(prev => ({
+      ...prev,
+      [platformId]: { success: false, message: '' }
+    }));
+  };
+
+  const scrapeVideos = async (username: string): Promise<void> => {
+    try {
+      const response = await fetch('/api/tiktok/scrape-videos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to scrape videos');
+      }
+
+      console.log('Successfully scraped videos for:', username);
+    } catch (error) {
+      console.error('Error scraping videos:', error);
+      throw error;
+    }
   };
 
   const handleConnect = async (platformId: string) => {
     const username = usernames[platformId];
-    if (!username) return;
+    if (!user || !username) return;
 
     setLoading(prev => ({ ...prev, [platformId]: true }));
+    setConnectionStatus(prev => ({
+      ...prev,
+      [platformId]: { success: false, message: '' }
+    }));
 
     try {
-      const response = await fetch('/api/social/connect', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': process.env.NEXT_PUBLIC_API_KEY || '',
-        },
-        body: JSON.stringify({
-          platform: platformId,
-          username,
-        }),
+      // Get current profile to preserve existing social media handles
+      const currentProfile = await getUserProfile(user.uid);
+      
+      // Update the user's profile in Firestore with the merged social media handles
+      await updateUserProfile(user.uid, {
+        socialMedia: {
+          ...(currentProfile?.socialMedia || {}),
+          [platformId]: username
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Error connecting to ${platformId}`);
+      // If connecting TikTok, also scrape videos
+      if (platformId === 'tiktok') {
+        await scrapeVideos(username);
       }
 
-      // Clear the input after successful connection
-      setUsernames(prev => ({
+      // Set successful connection status
+      setConnectionStatus(prev => ({
         ...prev,
-        [platformId]: '',
+        [platformId]: { 
+          success: true, 
+          message: `Successfully connected to ${platforms.find(p => p.id === platformId)?.name}`
+        }
       }));
     } catch (error) {
       console.error('Error connecting platform:', error);
+      setConnectionStatus(prev => ({
+        ...prev,
+        [platformId]: { 
+          success: false, 
+          message: `Failed to connect to ${platforms.find(p => p.id === platformId)?.name}`
+        }
+      }));
     } finally {
       setLoading(prev => ({ ...prev, [platformId]: false }));
     }
@@ -95,22 +179,29 @@ export default function SocialMediaPlatforms() {
             {platform.icon}
             <span className="text-white font-medium">{platform.name}</span>
           </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder={`Enter ${platform.name} username`}
-              value={usernames[platform.id]}
-              onChange={(e) => handleUsernameChange(platform.id, e.target.value)}
-              className="flex-1 px-3 py-2 rounded-md bg-[#1a1a1a] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]"
-              disabled={loading[platform.id]}
-            />
-            <button
-              onClick={() => handleConnect(platform.id)}
-              disabled={!usernames[platform.id] || loading[platform.id]}
-              className="px-4 py-2 rounded-md bg-[#4CAF50] text-white font-medium hover:bg-[#45a049] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading[platform.id] ? 'Connecting...' : 'Conectar'}
-            </button>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder={`Enter ${platform.name} username`}
+                value={usernames[platform.id]}
+                onChange={(e) => handleUsernameChange(platform.id, e.target.value)}
+                className="flex-1 px-3 py-2 rounded-md bg-[#1a1a1a] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]"
+                disabled={loading[platform.id]}
+              />
+              <button
+                onClick={() => handleConnect(platform.id)}
+                disabled={!usernames[platform.id] || loading[platform.id]}
+                className="px-4 py-2 rounded-md bg-[#4CAF50] text-white font-medium hover:bg-[#45a049] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading[platform.id] ? 'Connecting...' : connectionStatus[platform.id]?.success ? 'Connected' : 'Conectar'}
+              </button>
+            </div>
+            {connectionStatus[platform.id]?.message && (
+              <p className={`text-sm ${connectionStatus[platform.id]?.success ? 'text-green-500' : 'text-red-500'}`}>
+                {connectionStatus[platform.id]?.message}
+              </p>
+            )}
           </div>
         </div>
       ))}

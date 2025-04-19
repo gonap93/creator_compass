@@ -1,240 +1,221 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import anime from 'animejs';
+import { useEffect, useState } from 'react';
 import { Card } from '@/app/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
+import { useAuth } from '@/lib/hooks/useAuth';
+import { Loader2 } from 'lucide-react';
+import { TikTokProfile, TikTokVideo, fetchTikTokProfile, fetchTikTokVideos } from '@/lib/utils/tiktokUtils';
+import { getUserProfile, UserProfile } from '@/lib/firebase/profileUtils';
+import { TikTokVideoPreview } from '@/app/components/TikTokVideoPreview';
 
 export default function AnalyticsPage() {
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [hoveredBar, setHoveredBar] = useState<number | null>(null);
-  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+  const { user, loading: authLoading } = useAuth();
+  const [profile, setProfile] = useState<TikTokProfile | null>(null);
+  const [videos, setVideos] = useState<TikTokVideo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedMetric, setSelectedMetric] = useState<'views' | 'likes' | 'comments'>('views');
+  const [error, setError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      // Animate the chart bars
-      anime({
-        targets: '.chart-bar',
-        height: (el: HTMLElement) => el.getAttribute('data-value'),
-        duration: 1000,
-        delay: anime.stagger(100),
-        easing: 'easeOutElastic(1, .8)',
-      });
-    }
-  }, []);
+    console.log('[Analytics] Auth state:', { user, authLoading });
+    
+    const fetchData = async () => {
+      if (authLoading) {
+        console.log('[Analytics] Still loading auth state...');
+        return;
+      }
 
-  const barData = [
-    { value: 45, label: 'Mon', count: 12 },
-    { value: 65, label: 'Tue', count: 18 },
-    { value: 80, label: 'Wed', count: 22 },
-    { value: 75, label: 'Thu', count: 20 },
-    { value: 90, label: 'Fri', count: 25 },
-    { value: 85, label: 'Sat', count: 23 },
-  ];
+      if (!user) {
+        console.log('[Analytics] No user found, showing sign in message');
+        setError('Please sign in to view your TikTok analytics');
+        setLoading(false);
+        return;
+      }
 
-  const lineData = [
-    { value: 3, label: 'Week 1' },
-    { value: 5, label: 'Week 2' },
-    { value: 3, label: 'Week 3' },
-    { value: 5, label: 'Week 4' },
-  ];
+      console.log('[Analytics] User authenticated:', user.uid);
 
-  // Calculate chart dimensions and scales
-  const chartWidth = 100;
-  const chartHeight = 100;
-  const paddingX = 15;
-  const paddingY = 20;
-  const maxValue = 6; // Fixed max value for better scale
-  const yScale = (chartHeight - 2 * paddingY) / maxValue;
-  const xScale = (chartWidth - 2 * paddingX) / (lineData.length - 1);
+      try {
+        const profile = await getUserProfile(user.uid);
+        console.log('[Analytics] User profile:', profile);
+        setUserProfile(profile);
+        
+        if (!profile?.socialMedia?.tiktok) {
+          console.log('[Analytics] No TikTok account connected');
+          setError('Please connect your TikTok account in the profile page');
+          setLoading(false);
+          return;
+        }
 
-  // Generate points for the line path
-  const points = lineData.map((point, i) => ({
-    x: paddingX + i * xScale,
-    y: chartHeight - paddingY - (point.value * yScale),
-  }));
+        console.log('[Analytics] Found TikTok username:', profile.socialMedia.tiktok);
 
-  const pathD = `M ${points.map(p => `${p.x},${p.y}`).join(' L ')}`;
+        // Fetch TikTok data
+        const tiktokUsername = profile.socialMedia.tiktok;
+        const [profileData, videosData] = await Promise.all([
+          fetchTikTokProfile(tiktokUsername),
+          fetchTikTokVideos(tiktokUsername)
+        ]);
 
-  // Generate y-axis ticks
-  const yTicks = Array.from({ length: maxValue + 1 }, (_, i) => i);
+        console.log('[Analytics] TikTok data fetched:', {
+          profile: profileData,
+          videos: videosData
+        });
+
+        setProfile(profileData);
+        setVideos(videosData);
+      } catch (err) {
+        console.error('[Analytics] Error fetching data:', err);
+        setError('Failed to fetch TikTok data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user, authLoading]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-6">
+        <Card className="p-6 text-center">
+          <p className="text-red-500">{error}</p>
+        </Card>
+      </div>
+    );
+  }
+
+  const sortedVideos = [...videos].sort((a, b) => b[selectedMetric] - a[selectedMetric]);
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
-          Análisis de Contenido
+          TikTok Analytics
         </h1>
-        <p className="text-gray-400 mt-1">Rastrea el rendimiento y la organización de tu contenido</p>
+        <p className="text-gray-400 mt-1">Track your TikTok performance and engagement</p>
       </div>
       
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Ideas de Contenido</h3>
-          <p className="text-2xl font-bold text-white">24</p>
-          <p className="text-sm text-gray-400 mt-1">En proceso</p>
-        </Card>
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Publicados</h3>
-          <p className="text-2xl font-bold text-white">156</p>
-          <p className="text-sm text-gray-400 mt-1">Últimos 30 días</p>
-        </Card>
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Tasa de Engagement</h3>
-          <p className="text-2xl font-bold text-white">8.2%</p>
-          <p className="text-sm text-gray-400 mt-1">Promedio en todas las plataformas</p>
-        </Card>
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h3 className="text-sm font-medium text-gray-500">Calendario de Contenido</h3>
-          <p className="text-2xl font-bold text-white">85%</p>
-          <p className="text-sm text-gray-400 mt-1">En tiempo</p>
-        </Card>
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Bar Chart */}
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h2 className="text-xl font-semibold mb-4 text-white">Rendimiento de Contenido</h2>
-          <div ref={chartRef} className="h-64 flex items-end justify-between space-x-2">
-            {barData.map((bar, index) => (
-              <div
-                key={bar.label}
-                className="relative group"
-                onMouseEnter={() => setHoveredBar(index)}
-                onMouseLeave={() => setHoveredBar(null)}
-              >
-                <div 
-                  className={`chart-bar w-8 bg-[#4CAF50] rounded-t transition-all duration-300 ${
-                    hoveredBar === index ? 'bg-[#45a049] scale-110' : ''
-                  }`}
-                  data-value={`${bar.value}%`}
+      {/* Profile Section */}
+      {profile && (
+        <Card className="p-6 bg-[#1a1a1a] border-[#333] mb-6">
+          <div className="flex items-center space-x-6">
+            <div className="w-24 h-24 rounded-full bg-[#333] overflow-hidden">
+              {profile.avatar_url ? (
+                <img 
+                  src={profile.avatar_url} 
+                  alt={`@${profile.username}`}
+                  className="w-full h-full object-cover"
                 />
-                {hoveredBar === index && (
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1a1a1a] text-white px-2 py-1 rounded text-sm whitespace-nowrap border border-[#333]">
-                    {bar.count} piezas
-                  </div>
-                )}
-              </div>
-            ))}
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-2xl text-white">@{profile.username[0].toUpperCase()}</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">@{profile.username}</h1>
+              <p className="text-gray-400">{profile.region}</p>
+              {profile.verified && (
+                <p className="mt-2 text-[#4CAF50]">Verified Account</p>
+              )}
+            </div>
           </div>
-          <div className="flex justify-between mt-4 text-sm text-gray-500">
-            {barData.map(bar => (
-              <span key={bar.label}>{bar.label}</span>
-            ))}
+          
+          <div className="grid grid-cols-4 gap-4 mt-6">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-white">{profile.fans.toLocaleString()}</p>
+              <p className="text-sm text-gray-400">Followers</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-white">{profile.following.toLocaleString()}</p>
+              <p className="text-sm text-gray-400">Following</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-white">{profile.heart.toLocaleString()}</p>
+              <p className="text-sm text-gray-400">Likes</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-white">{profile.video.toLocaleString()}</p>
+              <p className="text-sm text-gray-400">Videos</p>
+            </div>
           </div>
         </Card>
+      )}
 
-        {/* Line Chart */}
-        <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-          <h2 className="text-xl font-semibold mb-4 text-white">Contenido Publicado por Semana</h2>
-          <div className="h-64 relative">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              {/* Y-axis grid lines and labels */}
-              {yTicks.map((tick) => {
-                const y = chartHeight - paddingY - (tick * yScale);
-                return (
-                  <g key={tick}>
-                    <line
-                      x1={paddingX}
-                      y1={y}
-                      x2={chartWidth - paddingX}
-                      y2={y}
-                      stroke="#333"
-                      strokeWidth="0.5"
+      {/* Videos Section */}
+      <Tabs defaultValue="ranking" className="w-full space-y-6">
+        <TabsList className="grid w-full grid-cols-2 bg-[#1a1a1a] border border-[#333]">
+          <TabsTrigger value="ranking" className="data-[state=active]:bg-[#4CAF50] data-[state=active]:text-white">Video Rankings</TabsTrigger>
+          <TabsTrigger value="grid" className="data-[state=active]:bg-[#4CAF50] data-[state=active]:text-white">Video Grid</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="ranking">
+          <Card className="p-6 bg-[#1a1a1a] border-[#333]">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-white">Top Performing Videos</h2>
+              <Select
+                value={selectedMetric}
+                onValueChange={(value: 'views' | 'likes' | 'comments') => setSelectedMetric(value)}
+              >
+                <SelectTrigger className="w-[180px] bg-[#333] border-[#444] text-white">
+                  <SelectValue placeholder="Select metric" />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                  <SelectItem value="views">Views</SelectItem>
+                  <SelectItem value="likes">Likes</SelectItem>
+                  <SelectItem value="comments">Comments</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-4">
+              {sortedVideos.slice(0, 5).map((video) => (
+                <div key={video.id} className="flex items-center space-x-4 p-4 bg-[#333] rounded-lg">
+                  <div className="w-12 h-12 flex-shrink-0">
+                    <img
+                      src={video.thumbnail_url}
+                      alt={video.caption}
+                      className="w-full h-full object-cover rounded"
                     />
-                    <text
-                      x={paddingX - 8}
-                      y={y}
-                      textAnchor="end"
-                      alignmentBaseline="middle"
-                      className="text-xs fill-gray-500"
-                    >
-                      {tick}
-                    </text>
-                  </g>
-                );
-              })}
-
-              {/* X-axis grid lines */}
-              {lineData.map((_, index) => {
-                const x = paddingX + index * xScale;
-                return (
-                  <line
-                    key={index}
-                    x1={x}
-                    y1={paddingY}
-                    x2={x}
-                    y2={chartHeight - paddingY}
-                    stroke="#333"
-                    strokeWidth="0.5"
-                  />
-                );
-              })}
-
-              {/* X and Y axes */}
-              <line
-                x1={paddingX}
-                y1={paddingY}
-                x2={paddingX}
-                y2={chartHeight - paddingY}
-                stroke="#666"
-                strokeWidth="1"
-              />
-              <line
-                x1={paddingX}
-                y1={chartHeight - paddingY}
-                x2={chartWidth - paddingX}
-                y2={chartHeight - paddingY}
-                stroke="#666"
-                strokeWidth="1"
-              />
-
-              {/* Data line */}
-              <path
-                d={pathD}
-                fill="none"
-                stroke="#4CAF50"
-                strokeWidth="2"
-                className="chart-line"
-              />
-
-              {/* Data points with larger hover area */}
-              {points.map((point, index) => (
-                <g key={lineData[index].label}>
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="4"
-                    fill="#4CAF50"
-                    className={`transition-all duration-300 ${
-                      hoveredPoint === index ? 'r-6 fill-[#45a049]' : ''
-                    }`}
-                    onMouseEnter={() => setHoveredPoint(index)}
-                    onMouseLeave={() => setHoveredPoint(null)}
-                  />
-                  {hoveredPoint === index && (
-                    <text
-                      x={point.x}
-                      y={point.y - 10}
-                      textAnchor="middle"
-                      fill="white"
-                      className="text-sm"
-                    >
-                      {lineData[index].value} piezas
-                    </text>
-                  )}
-                </g>
+                  </div>
+                  <div className="flex-grow">
+                    <p className="font-medium line-clamp-2 text-white">{video.caption}</p>
+                    <p className="text-sm text-gray-400">
+                      {new Date(video.publish_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold text-white">
+                      {video[selectedMetric].toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
+                    </p>
+                  </div>
+                </div>
               ))}
-            </svg>
-          </div>
-          <div className="flex justify-between mt-4 text-sm text-gray-500">
-            {lineData.map(point => (
-              <span key={point.label}>{point.label}</span>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videos.map((video) => (
+              <TikTokVideoPreview key={video.id} video={video} />
             ))}
           </div>
-        </Card>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

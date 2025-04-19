@@ -42,6 +42,17 @@ try {
 // Initialize services
 console.log("[Firebase] Initializing Firebase services");
 const auth = getAuth(app);
+
+// Set persistence before doing anything else with auth
+console.log("[Firebase] Setting up auth persistence...");
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("[Firebase] Auth persistence set to local successfully");
+  })
+  .catch((error) => {
+    console.error("[Firebase] Error setting persistence:", error);
+  });
+
 const db = getFirestore(app);
 const storage = getStorage(app);
 
@@ -61,9 +72,12 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Set persistence after initialization
-setPersistence(auth, browserLocalPersistence).catch((error) => {
-  console.error("[Firebase] Error setting persistence:", error);
+// Check current auth state
+auth.onAuthStateChanged((user) => {
+  console.log("[Firebase] Initial auth state:", {
+    isAuthenticated: !!user,
+    userId: user?.uid
+  });
 });
 
 export { app, auth, db, storage, analytics };

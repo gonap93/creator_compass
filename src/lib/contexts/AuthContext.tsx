@@ -1,16 +1,15 @@
 "use client";
 
 import React, { createContext, useEffect, useState } from "react";
-import { signInWithPopup, GoogleAuthProvider, signOut as firebaseSignOut } from "firebase/auth";
 import { User } from "firebase/auth";
-import { auth } from "../firebase/firebase";
-import { handleUserSignedIn } from "../firebase/authUtils";
+import { AuthService, AuthError } from "../services/auth.service";
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  error: AuthError | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,85 +17,48 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   signInWithGoogle: async () => {},
   signOut: async () => {},
+  error: null,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AuthError | null>(null);
+  const authService = AuthService.getInstance();
 
   useEffect(() => {
-    console.log("[AuthContext] Setting up auth state listener");
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      console.log("[AuthContext] Auth state changed:", {
-        isAuthenticated: !!user,
-        uid: user?.uid,
-        email: user?.email
-      });
-      
-      if (user) {
-        try {
-          console.log("[AuthContext] User is authenticated, creating/updating profile");
-          await handleUserSignedIn(user);
-          console.log("[AuthContext] User profile created/updated successfully");
-        } catch (error: any) {
-          console.error("[AuthContext] Error creating/updating user profile:", {
-            error,
-            code: error.code,
-            message: error.message,
-            stack: error.stack
-          });
-        }
-      } else {
-        console.log("[AuthContext] No user authenticated");
-      }
-      
+    const unsubscribe = authService.subscribeToAuthState((user) => {
       setUser(user);
       setLoading(false);
     });
 
     return () => {
-      console.log("[AuthContext] Cleaning up auth state listener");
       unsubscribe();
     };
   }, []);
 
   const signInWithGoogle = async () => {
-    console.log("[AuthContext] Initiating Google sign in");
-    const provider = new GoogleAuthProvider();
     try {
-      console.log("[AuthContext] Opening Google sign in popup");
-      const result = await signInWithPopup(auth, provider);
-      console.log("[AuthContext] Google sign in successful:", {
-        uid: result.user.uid,
-        email: result.user.email
-      });
-    } catch (error: any) {
-      console.error("[AuthContext] Error signing in with Google:", {
-        code: error.code,
-        message: error.message,
-        stack: error.stack
-      });
+      setError(null);
+      await authService.signInWithGoogle();
+    } catch (error) {
+      setError(error instanceof AuthError ? error : new AuthError('Failed to sign in with Google'));
       throw error;
     }
   };
 
   const signOutUser = async () => {
-    console.log("[AuthContext] Initiating sign out");
     try {
-      await firebaseSignOut(auth);
-      console.log("[AuthContext] Sign out successful");
-    } catch (error: any) {
-      console.error("[AuthContext] Error signing out:", {
-        code: error.code,
-        message: error.message,
-        stack: error.stack
-      });
+      setError(null);
+      await authService.signOut();
+    } catch (error) {
+      setError(error instanceof AuthError ? error : new AuthError('Failed to sign out'));
       throw error;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut: signOutUser }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut: signOutUser, error }}>
       {children}
     </AuthContext.Provider>
   );

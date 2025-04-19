@@ -589,7 +589,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span>Total de Elementos:</span>
+            <span>Cantidad de Ideas:</span>
             <span className="text-white font-medium">
               {Object.values(ideas).flat().length}
             </span>

@@ -1,39 +1,38 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '@/lib/firebase/firebase';
-import { handleUserSignedIn } from '@/lib/firebase/authUtils';
+import { User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { AuthService, AuthError } from '../services/auth.service';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AuthError | null>(null);
   const router = useRouter();
+  const authService = AuthService.getInstance();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        await handleUserSignedIn(user);
-      }
+    const unsubscribe = authService.subscribeToAuthState((user) => {
       setUser(user);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const signInWithGoogle = async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      await handleUserSignedIn(result.user);
+      setError(null);
+      await authService.signInWithGoogle();
       router.push('/dashboard');
-    } catch (error: any) {
-      console.error('Error signing in with Google:', error);
-      throw new Error(error.message || 'Failed to sign in with Google');
+    } catch (error) {
+      setError(error instanceof AuthError ? error : new AuthError('Failed to sign in with Google'));
+      throw error;
     }
   };
 
-  return { user, loading, signInWithGoogle };
+  return { user, loading, error, signInWithGoogle };
 }
