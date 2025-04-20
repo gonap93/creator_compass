@@ -94,9 +94,22 @@ export default function AnalyticsPage() {
     );
   }
 
+  const getMetricValue = (video: TikTokVideo, metric: 'views' | 'likes' | 'comments') => {
+    switch (metric) {
+      case 'views':
+        return video.stats?.playCount ?? video.views ?? 0;
+      case 'likes':
+        return video.stats?.diggCount ?? video.likes ?? 0;
+      case 'comments':
+        return video.stats?.commentCount ?? video.comments ?? 0;
+      default:
+        return 0;
+    }
+  };
+
   const sortedVideos = [...videos].sort((a, b) => {
-    const aValue = (a[selectedMetric] as number) ?? 0;
-    const bValue = (b[selectedMetric] as number) ?? 0;
+    const aValue = getMetricValue(a, selectedMetric);
+    const bValue = getMetricValue(b, selectedMetric);
     return bValue - aValue;
   });
 
@@ -200,7 +213,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-xl font-bold text-white">
-                      {(video[selectedMetric] ?? 0).toLocaleString()}
+                      {getMetricValue(video, selectedMetric).toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-400">
                       {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
