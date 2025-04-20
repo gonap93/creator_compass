@@ -140,6 +140,7 @@ export default function Home() {
               >
                 Precios
               </button>
+              {false &&
               <button
                 onClick={() => {
                   document.getElementById('testimonials')?.scrollIntoView({ behavior: 'smooth' });
@@ -147,7 +148,7 @@ export default function Home() {
                 className="text-gray-300 hover:text-white transition-colors font-bold"
               >
                 Testimonios
-              </button>
+              </button>}
             </div>
           </div>
 
@@ -270,93 +271,116 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="min-h-screen bg-[#0a0a0a] text-white relative overflow-hidden">
+      <main className="min-h-screen translate-y-10 bg-[#0a0a0a] text-white relative overflow-hidden">
         {/* Hero Section */}
-        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 pt-24 pb-16 sm:py-32">
-          {/* Background gradient */}
+        <section className="relative min-h-[90vh] flex items-center px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+          {/* Background Effects */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-[#0a0a0a]" />
-            {/* Multiple overlapping gradients for smoother transition */}
-            <div className="absolute inset-0">
-              {/* Base gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#4CAF50]/3 from-0% via-[#0a0a0a] via-70% to-[#0a0a0a] to-100%" />
-              {/* Subtle overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent from-60% via-[#0a0a0a]/80 via-80% to-[#0a0a0a] to-100%" />
-              {/* Extended glow effect */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px]">
-                <div className="absolute inset-0 bg-[#4CAF50]/3 rounded-[100%] blur-[150px] opacity-50" />
-              </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#4CAF50]/5 via-[#0a0a0a] to-[#0a0a0a]" />
+            <div className="absolute inset-0" style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(74, 175, 80, 0.05) 1px, transparent 0)`,
+              backgroundSize: '32px 32px'
+            }} />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px]">
+              <div className="absolute inset-0 bg-[#4CAF50]/3 rounded-full blur-[120px] opacity-30" />
             </div>
           </div>
-          
-          {/* Content */}
-          <div className="relative z-10 max-w-[1200px] mx-auto text-center">
-            <h1 className="text-[2.5rem] sm:text-6xl md:text-8xl font-bold mb-4 sm:mb-8 leading-[1.1] tracking-tight bg-gradient-to-b from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text pb-4">
-              Planificá tus <span className="text-white">ideas.</span><br />Potenciá tus <span className="text-white">redes.</span>
-            </h1>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 sm:mb-16 max-w-3xl mx-auto font-light leading-relaxed px-4 sm:px-0">
-              Transforma tus ideas creativas en una estrategia de contenido estructurada. Planifica, rastrea y gestiona tu contenido en todas las plataformas desde un solo lugar.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-8 sm:mb-16 px-6 sm:px-0">
-              {user ? (
-                <button
-                  onClick={handleDashboardClick}
-                  className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
-                >
-                  Ir al Panel
-                </button>
-              ) : (
-                <>
-                  <Link
-                    href="/signup"
-                    className="w-full sm:w-auto bg-[#4CAF50] hover:bg-[#45a049] text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 hover:scale-105 active:bg-[#3d8b40] touch-manipulation relative z-20"
-                  >
-                    Comenzar
-                  </Link>
-                  <Link
-                    href="/signin"
-                    className="w-full sm:w-auto bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-6 sm:px-10 py-4 rounded-lg text-lg sm:text-xl font-medium transition-all duration-300 active:bg-[#4CAF50]/20 touch-manipulation relative z-20"
-                  >
-                    Iniciar Sesión
-                  </Link>
-                </>
-              )}
-            </div>
 
-            {/* Device Previews */}
-            <div className="relative w-full max-w-[90%] sm:max-w-7xl mx-auto mt-4 sm:mt-8">
-              {/* Glow Effects */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#4CAF50]/20 rounded-full blur-[100px] opacity-40" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-[45%] -translate-y-1/2 w-[600px] h-[600px] bg-[#2E7D32]/20 rounded-full blur-[100px] opacity-40" />
+          {/* Content Container */}
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              {/* Left Column - Text Content */}
+              <div className="flex flex-col max-w-2xl lg:max-w-none">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1a1a1a] border border-[#4CAF50]/20 mb-8 self-start">
+                  <span className="text-[#4CAF50] text-sm font-medium">Novedades</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-400 text-sm">Proximamente v1.0</span>
+                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-6">
+                  <div className="whitespace-nowrap">
+                    <span className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text">Planificá tus </span>
+                    <span className="text-white">ideas.</span>
+                  </div>
+                  <div className="whitespace-nowrap">
+                    <span className="bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] text-transparent bg-clip-text">Potenciá tus </span>
+                    <span className="text-white">redes.</span>
+                  </div>
+                </h1>
+
+                <p className="text-lg sm:text-xl text-gray-400 mb-8 leading-relaxed">
+                  Transforma tus ideas creativas en una estrategia de contenido estructurada. Planifica, rastrea y gestiona tu contenido en todas las plataformas desde un solo lugar.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                  {user ? (
+                    <button
+                      onClick={handleDashboardClick}
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#4CAF50] text-white font-medium hover:bg-[#45a049] transition-all duration-300 hover:scale-[1.02] active:bg-[#3d8b40] touch-manipulation"
+                    >
+                      Ir al Panel
+                      <svg className="ml-2 -mr-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <>
+                      <Link
+                        href="/signup"
+                        className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#4CAF50] text-white font-medium hover:bg-[#45a049] transition-all duration-300 hover:scale-[1.02] active:bg-[#3d8b40] touch-manipulation"
+                      >
+                        Comenzar
+                        <svg className="ml-2 -mr-1 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </Link>
+                      <Link
+                        href="/signin"
+                        className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#1a1a1a] text-white font-medium border border-[#4CAF50]/20 hover:bg-[#4CAF50]/5 hover:border-[#4CAF50]/40 transition-all duration-300"
+                      >
+                        Iniciar Sesión
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
 
-              {/* MacBook Preview */}
-              <div className="relative w-full sm:w-[1200px] bg-[#1a1a1a] rounded-lg border border-gray-800 shadow-2xl transform hover:scale-[1.02] transition-transform duration-300 mx-auto">
-                <div className="absolute top-0 left-0 right-0 h-6 sm:h-8 bg-[#0a0a0a] rounded-t-lg flex items-center px-4">
-                  <div className="flex gap-1.5 sm:gap-2">
-                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
-                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+              {/* Right Column - App Preview */}
+              <div className="relative lg:ml-4">
+                <div className="relative w-[140%] aspect-[16/10] bg-[#1a1a1a] rounded-xl border border-[#4CAF50]/10 shadow-2xl shadow-black/20 overflow-hidden translate-x-[10%]">
+                  <div className="absolute top-0 left-0 right-0 h-8 bg-[#0a0a0a] flex items-center px-4 z-10">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
                   </div>
+                  <div className="absolute inset-20 pt-5 translate-x-[11%] translate-y-[1%] scale-[145%]">
+                    <Image
+                      src="/content-board.jpg"
+                      alt="Content Board Interface"
+                      width={1200}
+                      height={800}
+                      className="w-full h-full object-cover"
+                      priority
+                    />
+                  </div>
+                  {/* Reflection/Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#4CAF50]/5 to-transparent pointer-events-none"></div>
                 </div>
-                <div className="pt-6 sm:pt-8">
-                  <Image
-                    src="/content-board.jpg"
-                    alt="Content Board Interface"
-                    width={1200}
-                    height={800}
-                    className="w-full h-auto rounded-b-lg"
-                    priority
-                  />
-                </div>
+                {/* Background Glow */}
+                <div className="absolute -inset-1 translate-y-5 bg-gradient-to-r from-[#4CAF50]/20 to-[#2E7D32]/20 rounded-xl blur-2xl opacity-50 -z-10"></div>
               </div>
             </div>
           </div>
         </section>
 
         {/* How it Works Section */}
-        <section id="features" className="relative py-18 px-4">
+        <section id="features" className="relative py-20 px-4">
           <div className="absolute inset-0 bg-[#0a0a0a]" />
           <div className="relative z-10 max-w-7xl mx-auto">
             <h2 className="text-4xl md:text-6xl font-bold text-center mb-20 text-white">
@@ -494,268 +518,290 @@ export default function Home() {
         {/* Pricing Section */}
         <section id="pricing" className="py-24 px-4">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
-              Precios simples y transparentes
-            </h2>
-            <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-              Elige el plan que mejor se adapte a tus necesidades de creación de contenido
-            </p>
-            
-            {/* Billing Period Toggle */}
-            <div className="flex flex-col items-center justify-center mb-12">
-              <div className="flex flex-col items-center gap-3">
-                <div className="bg-[#1a1a1a] rounded-full p-1 flex items-center">
-                  <button
-                    onClick={() => setBillingPeriod('monthly')}
-                    className={`relative z-10 px-6 py-2 rounded-full transition-colors ${
-                      billingPeriod === 'monthly'
-                        ? 'bg-[#4CAF50] text-white'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    Mensual
-                  </button>
-                  <button
-                    onClick={() => setBillingPeriod('yearly')}
-                    className={`relative z-10 px-6 py-2 rounded-full transition-colors ${
-                      billingPeriod === 'yearly'
-                        ? 'bg-[#4CAF50] text-white'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    Anual
-                  </button>
-                </div>
-                <span className="text-sm bg-[#4CAF50]/10 text-[#4CAF50] px-3 py-1 rounded-full">
-                  Ahorra 20% Anualmente
-                </span>
+            {/* Header */}
+            <div className="flex flex-col items-center text-center gap-4 mb-16">
+
+              <h2 className="text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
+                Precios simples y transparentes
+              </h2>
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto text-center">
+                Elige un plan accesible con las mejores funciones para involucrar a tu audiencia, crear lealtad y potenciar tus resultados.
+              </p>
+            </div>
+
+            {/* Billing Toggle */}
+            <div className="flex justify-center mb-16">
+              <div className="inline-flex items-center bg-[#1a1a1a] rounded-full p-1">
+                <button
+                  onClick={() => setBillingPeriod('monthly')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
+                    billingPeriod === 'monthly'
+                      ? 'bg-[#4CAF50] text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Mensual
+                </button>
+                <button
+                  onClick={() => setBillingPeriod('yearly')}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
+                    billingPeriod === 'yearly'
+                      ? 'bg-[#4CAF50] text-white'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Anual
+                </button>
               </div>
             </div>
 
+            {/* Pricing Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Free Plan */}
-              <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10 hover:border-[#4CAF50]/30 transition-all duration-300">
-                <div className="flex flex-col h-full">
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Gratis</h3>
-                    <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-4xl font-bold">$0</span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
-                    </div>
-                    <p className="text-gray-400">Perfecto para comenzar con la planificación de contenido</p>
+              <div className="bg-[#1a1a1a] rounded-2xl p-8 border border-gray-800">
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Básico</h3>
+                  <p className="text-gray-400 mb-6">
+                    Lo esencial para comenzar con la planificación de contenido.
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">$0</span>
+                    <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                   </div>
-                  <ul className="space-y-4 mb-8 flex-grow">
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Hasta 10 ideas de contenido
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Análisis básico
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Soporte para una plataforma
-                    </li>
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
-                  >
-                    Comenzar
-                  </Link>
                 </div>
+                <Link
+                  href="/signup"
+                  className="block w-full bg-transparent border-2 border-[#4CAF50] text-white px-8 py-3 rounded-lg text-center font-medium mb-8"
+                >
+                  Comenzar
+                </Link>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    5 ideas de contenido
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Hasta 1,000 suscriptores
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Análisis básico
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    48h tiempo de respuesta
+                  </li>
+                </ul>
               </div>
 
               {/* Pro Plan */}
-              <div className="bg-[#1a1a1a] rounded-xl p-8 border-2 border-[#4CAF50] relative transform hover:scale-105 transition-all duration-300">
+              <div className="bg-[#1a1a1a] rounded-2xl p-8 border-2 border-[#4CAF50] relative">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4CAF50] text-white px-4 py-1 rounded-full text-sm font-medium">
                   Más Popular
                 </div>
-                <div className="flex flex-col h-full">
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Pro</h3>
-                    <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-4xl font-bold">
-                        ${billingPeriod === 'monthly' ? '19' : '15'}
-                      </span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
-                    </div>
-                    <p className="text-gray-400">Para creadores de contenido en crecimiento</p>
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Profesional</h3>
+                  <p className="text-gray-400 mb-6">
+                    Un plan que crece con tu negocio en expansión.
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">${billingPeriod === 'monthly' ? '29' : '24'}</span>
+                    <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                   </div>
-                  <ul className="space-y-4 mb-8 flex-grow">
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Ideas de contenido ilimitadas
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Análisis avanzado
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Soporte multiplataforma
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Calendario de contenido
-                    </li>
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
-                  >
-                    Comenzar
-                  </Link>
                 </div>
+                <Link
+                  href="/signup"
+                  className="block w-full bg-[#4CAF50] text-white px-8 py-3 rounded-lg text-center font-medium mb-8"
+                >
+                  Comenzar
+                </Link>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    25 ideas de contenido
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Hasta 10,000 suscriptores
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Análisis avanzado
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    24h tiempo de respuesta
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Automatizaciones de marketing
+                  </li>
+                </ul>
               </div>
 
-              {/* Business Plan */}
-              <div className="bg-[#1a1a1a] rounded-xl p-8 border border-[#4CAF50]/10 hover:border-[#4CAF50]/30 transition-all duration-300">
-                <div className="flex flex-col h-full">
-                  <div className="mb-8">
-                    <h3 className="text-2xl font-bold mb-4">Empresarial</h3>
-                    <div className="flex items-baseline gap-1 mb-6">
-                      <span className="text-4xl font-bold">
-                        ${billingPeriod === 'monthly' ? '49' : '39'}
-                      </span>
-                      <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
-                    </div>
-                    <p className="text-gray-400">Para equipos profesionales de contenido</p>
+              {/* Enterprise Plan */}
+              <div className="bg-[#1a1a1a] rounded-2xl p-8 border border-gray-800">
+                <div className="mb-8">
+                  <h3 className="text-2xl font-bold mb-4">Empresarial</h3>
+                  <p className="text-gray-400 mb-6">
+                    Soporte dedicado e infraestructura para tu empresa.
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold">${billingPeriod === 'monthly' ? '59' : '49'}</span>
+                    <span className="text-gray-400">/{billingPeriod === 'monthly' ? 'mes' : 'año'}</span>
                   </div>
-                  <ul className="space-y-4 mb-8 flex-grow">
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Todo lo del plan Pro
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Colaboración en equipo
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Flujos de trabajo personalizados
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-300">
-                      <svg className="w-5 h-5 text-[#4CAF50]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Soporte prioritario
-                    </li>
-                  </ul>
-                  <Link
-                    href="/signup"
-                    className="bg-transparent border-2 border-[#4CAF50] hover:bg-[#4CAF50]/10 text-white px-8 py-3 rounded-lg text-center font-medium transition-colors"
-                  >
-                    Comenzar
-                  </Link>
                 </div>
+                <Link
+                  href="/signup"
+                  className="block w-full bg-transparent border-2 border-[#4CAF50] text-white px-8 py-3 rounded-lg text-center font-medium mb-8"
+                >
+                  Comenzar
+                </Link>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Ideas ilimitadas
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Suscriptores ilimitados
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Análisis avanzado
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    1h tiempo de respuesta dedicado
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Automatizaciones de marketing
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-300">
+                    <svg className="w-5 h-5 text-[#4CAF50] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Herramientas de reportes personalizados
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section id="testimonials" className="py-24 px-4 bg-[#1a1a1a]">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
-              Lo que dicen los Creadores
-            </h2>
-            <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
-              Únete a miles de creadores de contenido que confían en Creator Compass
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Testimonial 1 */}
-              <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-[#4CAF50]">S</span>
+        {/* Testimonials Section - Hidden for now */}
+        {false && (
+          <section id="testimonials" className="py-24 px-4 bg-[#1a1a1a]">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#4CAF50] to-[#45a049]">
+                Lo que dicen los Creadores
+              </h2>
+              <p className="text-xl text-gray-400 text-center mb-16 max-w-2xl mx-auto">
+                Únete a miles de creadores de contenido que confían en Creator Compass
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Testimonial 1 */}
+                <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
+                      <span className="text-xl font-bold text-[#4CAF50]">S</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Sofía Rodríguez</h3>
+                      <p className="text-sm text-gray-400">Creadora de Contenido</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Sofía Rodríguez</h3>
-                    <p className="text-sm text-gray-400">Creadora de Contenido</p>
+                  <p className="text-gray-300 mb-6">
+                    &ldquo;Creator Compass ha transformado la forma en que gestiono mi contenido. Las herramientas de organización son increíbles y los análisis me ayudan a entender qué funciona.&rdquo;
+                  </p>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
                   </div>
                 </div>
-                <p className="text-gray-300 mb-6">
-                  &ldquo;Creator Compass ha transformado la forma en que gestiono mi contenido. Las herramientas de organización son increíbles y los análisis me ayudan a entender qué funciona.&rdquo;
-                </p>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
 
-              {/* Testimonial 2 */}
-              <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-[#4CAF50]">M</span>
+                {/* Testimonial 2 */}
+                <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
+                      <span className="text-xl font-bold text-[#4CAF50]">M</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Martín González</h3>
+                      <p className="text-sm text-gray-400">YouTuber</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Martín González</h3>
-                    <p className="text-sm text-gray-400">YouTuber</p>
+                  <p className="text-gray-300 mb-6">
+                    &ldquo;La función del tablero de contenido es revolucionaria. Finalmente puedo hacer un seguimiento de todas mis ideas de videos y su progreso en un solo lugar. ¡Los análisis también son súper útiles!&rdquo;
+                  </p>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
                   </div>
                 </div>
-                <p className="text-gray-300 mb-6">
-                  &ldquo;La función del tablero de contenido es revolucionaria. Finalmente puedo hacer un seguimiento de todas mis ideas de videos y su progreso en un solo lugar. ¡Los análisis también son súper útiles!&rdquo;
-                </p>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
 
-              {/* Testimonial 3 */}
-              <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
-                    <span className="text-xl font-bold text-[#4CAF50]">A</span>
+                {/* Testimonial 3 */}
+                <div className="bg-[#0a0a0a] rounded-xl p-8 border border-[#4CAF50]/10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-[#4CAF50]/10 rounded-full flex items-center justify-center">
+                      <span className="text-xl font-bold text-[#4CAF50]">A</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Alejandro Martínez</h3>
+                      <p className="text-sm text-gray-400">Gerente de Redes Sociales</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Alejandro Martínez</h3>
-                    <p className="text-sm text-gray-400">Gerente de Redes Sociales</p>
+                  <p className="text-gray-300 mb-6">
+                    &ldquo;Gestionar múltiples cuentas de redes sociales es mucho más fácil ahora. Las funciones de programación y análisis me ahorran horas cada semana. ¡Vale cada peso!&rdquo;
+                  </p>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
                   </div>
-                </div>
-                <p className="text-gray-300 mb-6">
-                  &ldquo;Gestionar múltiples cuentas de redes sociales es mucho más fácil ahora. Las funciones de programación y análisis me ahorran horas cada semana. ¡Vale cada peso!&rdquo;
-                </p>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-[#4CAF50]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
     </>
   );
