@@ -9,10 +9,8 @@ const INITIAL_IDEAS: ContentIdea[] = [];
 const DEMO_SEQUENCE = [
   // Create a new card in the idea column
   { type: 'create', delay: 0 },
-  // Move card from idea to drafting
-  { type: 'move', ideaId: '1', fromStatus: 'idea', toStatus: 'drafting', delay: 3000 },
-  // Move card from drafting to filming
-  { type: 'move', ideaId: '1', fromStatus: 'drafting', toStatus: 'filming', delay: 5000 },
+  // Move card from idea to filming
+  { type: 'move', ideaId: '1', fromStatus: 'idea', toStatus: 'filming', delay: 3000 },
 ];
 
 export default function ProductPreview() {
@@ -24,8 +22,6 @@ export default function ProductPreview() {
     switch (status) {
       case 'idea':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'drafting':
-        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
       case 'filming':
         return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
       default:
@@ -204,8 +200,8 @@ export default function ProductPreview() {
 
   return (
     <div className="max-w-6xl mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['idea', 'drafting', 'filming'].map((status) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {['idea', 'filming'].map((status) => (
           <div
             key={status}
             data-status={status}

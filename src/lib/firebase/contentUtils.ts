@@ -83,7 +83,6 @@ export async function getUserContentIdeas(userId: string): Promise<ContentBoard>
     // Group ideas by status
     const board: ContentBoard = {
       idea: ideas.filter(idea => idea.status === 'idea'),
-      drafting: ideas.filter(idea => idea.status === 'drafting'),
       filming: ideas.filter(idea => idea.status === 'filming'),
       scheduled: ideas.filter(idea => idea.status === 'scheduled'),
       published: ideas.filter(idea => idea.status === 'published'),

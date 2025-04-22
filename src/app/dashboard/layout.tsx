@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase/firebase';
-import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut, FiCalendar, FiHome, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiFileText, FiBarChart2, FiUser, FiSettings, FiLogOut, FiCalendar, FiHome, FiChevronLeft, FiChevronRight, FiGrid } from 'react-icons/fi';
 
 export default function DashboardLayout({
   children,
@@ -25,6 +25,12 @@ export default function DashboardLayout({
   };
 
   const navigationItems = [
+    {
+      href: '/dashboard',
+      label: 'Dashboard',
+      icon: FiGrid,
+      color: '#4CAF50'
+    },
     {
       href: '/dashboard/content',
       label: 'Content Board',

@@ -2,7 +2,7 @@ export type Platform = 'TikTok' | 'Instagram' | 'YouTube' | 'LinkedIn' | 'Twitte
 
 export type ContentGoal = 'engagement' | 'growth' | 'brand' | 'sales' | 'education' | 'other';
 
-export type ContentStatus = 'idea' | 'drafting' | 'filming' | 'scheduled' | 'published';
+export type ContentStatus = 'idea' | 'filming' | 'scheduled' | 'published';
 
 export interface ContentIdea {
   id: string;
@@ -20,7 +20,6 @@ export interface ContentIdea {
 
 export interface ContentBoard {
   idea: ContentIdea[];
-  drafting: ContentIdea[];
   filming: ContentIdea[];
   scheduled: ContentIdea[];
   published: ContentIdea[];

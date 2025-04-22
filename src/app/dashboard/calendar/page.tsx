@@ -24,6 +24,7 @@ export default function CalendarPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [contentIdeas, setContentIdeas] = useState<ContentIdea[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>('month');
+  const [editingCard, setEditingCard] = useState<string | null>(null);
 
   useEffect(() => {
     const loadContentIdeas = async () => {
@@ -187,7 +188,7 @@ export default function CalendarPage() {
     const today = new Date();
 
     return (
-      <div className="border border-[#333] rounded-lg bg-[#1a1a1a]">
+      <div className="border border-[#333] rounded-xl bg-[#1a1a1a] shadow-lg">
         {/* Header with days */}
         <div className="grid grid-cols-8 text-sm font-medium border-b border-[#333]">
           {/* Empty cell for time column */}
@@ -225,7 +226,7 @@ export default function CalendarPage() {
                   <div 
                     key={dateIndex}
                     className={cn(
-                      "p-2 border-r border-b border-[#333] min-h-[60px] relative",
+                      "p-2 border-r border-b border-[#333] min-h-[60px] relative hover:bg-[#2a2a2a]/30 transition-colors",
                       date.toDateString() === today.toDateString() && "bg-[#4CAF50]/5"
                     )}
                   >
@@ -233,7 +234,7 @@ export default function CalendarPage() {
                       <div
                         key={ideaIndex}
                         className={cn(
-                          "absolute left-1 right-1 p-1 rounded text-xs",
+                          "absolute left-1 right-1 p-1.5 rounded-md text-xs shadow-sm group",
                           getPlatformColor(idea.platform as Platform),
                           "hover:opacity-90 transition-opacity cursor-pointer"
                         )}
@@ -242,9 +243,38 @@ export default function CalendarPage() {
                           height: '24px'
                         }}
                       >
-                        <div className="flex items-center gap-1 h-full overflow-hidden">
-                          {getPlatformIcon(idea.platform as Platform)}
-                          <span className="truncate text-white">{idea.title}</span>
+                        <div className="flex items-center justify-between h-full overflow-hidden">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            {getPlatformIcon(idea.platform as Platform)}
+                            <span className="truncate text-white">{idea.title}</span>
+                          </div>
+                          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingCard(idea.id);
+                              }}
+                              className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                              title="Edit"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle duplicate
+                              }}
+                              className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                              title="Copy"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                                <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -264,7 +294,7 @@ export default function CalendarPage() {
     const today = new Date();
     
     return (
-      <div className="border border-[#333] rounded-lg bg-[#1a1a1a]">
+      <div className="border border-[#333] rounded-xl bg-[#1a1a1a] shadow-lg">
         {/* Header */}
         <div className="grid grid-cols-7 text-sm font-medium border-b border-[#333]">
           {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map((day, i) => (
@@ -291,30 +321,59 @@ export default function CalendarPage() {
               <div
                 key={i}
                 className={cn(
-                  "p-2 border-r border-b border-[#333] min-h-[120px] relative",
+                  "p-2 border-r border-b border-[#333] min-h-[120px] relative hover:bg-[#2a2a2a]/30 transition-colors",
                   isToday && "bg-[#4CAF50]/5",
                   (i + firstDayOfMonth + 1) % 7 === 0 && "border-r-0"
                 )}
               >
                 <span className={cn(
                   "inline-block w-6 h-6 text-center rounded-full text-sm",
-                  isToday && "bg-[#4CAF50] text-white"
+                  isToday && "bg-[#4CAF50] text-white ring-2 ring-[#4CAF50]/50"
                 )}>
                   {i + 1}
                 </span>
-                <div className="mt-2 space-y-1">
+                <div className="mt-2 space-y-1.5">
                   {ideas.map((idea, ideaIndex) => (
                     <div
                       key={ideaIndex}
                       className={cn(
-                        "p-1 rounded text-xs",
+                        "p-1.5 rounded-md text-xs shadow-sm group",
                         getPlatformColor(idea.platform as Platform),
                         "hover:opacity-90 transition-opacity cursor-pointer"
                       )}
                     >
-                      <div className="flex items-center gap-1">
-                        {getPlatformIcon(idea.platform as Platform)}
-                        <span className="truncate text-white">{idea.title}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          {getPlatformIcon(idea.platform as Platform)}
+                          <span className="truncate text-white">{idea.title}</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingCard(idea.id);
+                            }}
+                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                            title="Edit"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Handle duplicate
+                            }}
+                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                            title="Copy"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                              <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -328,7 +387,7 @@ export default function CalendarPage() {
   };
 
   const renderYearView = () => (
-    <div className="border border-[#333] rounded-lg bg-[#1a1a1a] p-6">
+    <div className="border border-[#333] rounded-xl bg-[#1a1a1a] p-6 shadow-lg">
       <div className="grid grid-cols-3 gap-6">
         {getMonthsInYear(currentMonth.getFullYear()).map((date, monthIndex) => (
           <div key={monthIndex} className="space-y-2">
@@ -342,7 +401,7 @@ export default function CalendarPage() {
                   <div
                     key={i}
                     className={cn(
-                      "h-6 w-6 flex items-center justify-center text-xs rounded cursor-pointer hover:bg-[#4CAF50]/10 transition-colors",
+                      "h-6 w-6 flex items-center justify-center text-xs rounded-md cursor-pointer hover:bg-[#4CAF50]/10 transition-colors",
                       hasEvents && "bg-[#4CAF50]/20 text-[#4CAF50]",
                       isToday && "ring-2 ring-[#4CAF50]",
                       selectedDate.toDateString() === dayDate.toDateString() && "bg-[#4CAF50]/30"
@@ -389,9 +448,9 @@ export default function CalendarPage() {
               <div
                 key={i}
                 className={cn(
-                  "h-8 flex items-center justify-center rounded cursor-pointer hover:bg-gray-700/50",
-                  isToday && "bg-blue-500/20",
-                  isSelected && "ring-2 ring-blue-500"
+                  "h-8 flex items-center justify-center rounded-md cursor-pointer hover:bg-[#4CAF50]/10 transition-colors",
+                  isToday && "bg-[#4CAF50]/20",
+                  isSelected && "ring-2 ring-[#4CAF50]"
                 )}
                 onClick={() => setSelectedDate(date)}
               >
@@ -411,22 +470,22 @@ export default function CalendarPage() {
           <div className="flex items-center gap-4">
             <h1 className="text-2xl">Calendar</h1>
             <div className="flex items-center gap-2">
-              <button onClick={() => navigateView('prev')} className="p-2">
+              <button onClick={() => navigateView('prev')} className="p-2 hover:bg-[#2a2a2a]/50 rounded-md transition-colors">
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-lg">{getNavigationTitle()}</span>
-              <button onClick={() => navigateView('next')} className="p-2">
+              <button onClick={() => navigateView('next')} className="p-2 hover:bg-[#2a2a2a]/50 rounded-md transition-colors">
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex rounded-lg bg-gray-800">
+            <div className="flex rounded-lg bg-[#2a2a2a] shadow-sm">
               <button
                 onClick={() => setViewMode('week')}
                 className={cn(
-                  "px-4 py-2 rounded-l-lg",
-                  viewMode === 'week' && "bg-gray-700"
+                  "px-4 py-2 rounded-l-lg transition-colors",
+                  viewMode === 'week' && "bg-[#3a3a3a]"
                 )}
               >
                 Week
@@ -434,8 +493,8 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('month')}
                 className={cn(
-                  "px-4 py-2",
-                  viewMode === 'month' && "bg-gray-700"
+                  "px-4 py-2 transition-colors",
+                  viewMode === 'month' && "bg-[#3a3a3a]"
                 )}
               >
                 Month
@@ -443,8 +502,8 @@ export default function CalendarPage() {
               <button
                 onClick={() => setViewMode('year')}
                 className={cn(
-                  "px-4 py-2 rounded-r-lg",
-                  viewMode === 'year' && "bg-gray-700"
+                  "px-4 py-2 rounded-r-lg transition-colors",
+                  viewMode === 'year' && "bg-[#3a3a3a]"
                 )}
               >
                 Year
@@ -452,13 +511,13 @@ export default function CalendarPage() {
             </div>
             <button
               onClick={goToToday}
-              className="px-4 py-2 rounded-lg hover:bg-gray-700"
+              className="px-4 py-2 rounded-lg hover:bg-[#2a2a2a] transition-colors"
             >
               Today
             </button>
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 flex items-center gap-2 shadow-md transition-all hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             >
               <Plus className="w-4 h-4" /> Add
             </button>
@@ -474,20 +533,20 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="flex gap-8 p-6">
+    <div className="flex gap-8 p-6 min-h-[calc(100vh-theme(spacing.16))]">
       {/* Left Sidebar */}
-      <div className="w-80">
-        <div className="border border-[#333] rounded-lg bg-[#1a1a1a] p-6 space-y-8">
+      <div className="w-80 flex flex-col">
+        <div className="border border-[#333] rounded-xl bg-[#1a1a1a] p-6 space-y-8 shadow-lg flex-1">
           {renderMiniCalendar()}
 
           {/* Today's Events */}
-          <div>
+          <div className="flex-1">
             <h3 className="text-lg font-medium mb-3">Today</h3>
             <div className="space-y-2">
               {getTodayContentIdeas().map((idea, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between p-2"
+                  className="flex items-center justify-between p-2.5 rounded-md hover:bg-[#2a2a2a]/30 transition-colors"
                 >
                   <div className={cn(
                     "flex items-center gap-2",

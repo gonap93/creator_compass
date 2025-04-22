@@ -9,16 +9,14 @@ import { ContentIdea, ContentStatus, Platform } from '@/lib/types/content';
 import AddContentModal from '@/components/AddContentModal';
 
 const statusColors = {
-  idea: 'from-blue-500/10 to-blue-500/5',
-  drafting: 'from-purple-500/10 to-purple-500/5',
-  filming: 'from-orange-500/10 to-orange-500/5',
-  scheduled: 'from-yellow-500/10 to-yellow-500/5',
-  published: 'from-green-500/10 to-green-500/5',
+  idea: 'from-blue-500/15 to-blue-500/5',
+  filming: 'from-orange-500/15 to-orange-500/5',
+  scheduled: 'from-yellow-500/15 to-yellow-500/5',
+  published: 'from-green-500/15 to-green-500/5',
 };
 
 const statusProgressColors = {
   idea: 'bg-blue-500',
-  drafting: 'bg-purple-500',
   filming: 'bg-orange-500',
   scheduled: 'bg-yellow-500',
   published: 'bg-green-500',
@@ -26,7 +24,6 @@ const statusProgressColors = {
 
 const statusTooltips = {
   idea: 'Ideas y conceptos iniciales de contenido',
-  drafting: 'Contenido en fase de escritura o planificación',
   filming: 'Contenido siendo grabado o producido',
   scheduled: 'Contenido listo para ser publicado',
   published: 'Contenido publicado y disponible para la audiencia',
@@ -36,11 +33,6 @@ const statusIcons = {
   idea: (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
       <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
-    </svg>
-  ),
-  drafting: (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
     </svg>
   ),
   filming: (
@@ -84,15 +76,13 @@ type DragTarget = ContentStatus | 'trash' | null;
 
 // Add these type definitions before the Dashboard component
 const nextStatusMap: Record<Exclude<ContentStatus, 'published'>, ContentStatus> = {
-  idea: 'drafting',
-  drafting: 'filming',
+  idea: 'filming',
   filming: 'scheduled',
   scheduled: 'published'
 };
 
 const prevStatusMap: Record<Exclude<ContentStatus, 'idea'>, ContentStatus> = {
-  drafting: 'idea',
-  filming: 'drafting',
+  filming: 'idea',
   scheduled: 'filming',
   published: 'scheduled'
 };
@@ -162,13 +152,11 @@ export default function Dashboard() {
   const [sortBy, setSortBy] = useState<'dueDate' | 'title'>('dueDate');
   const [ideas, setIdeas] = useState<{
     idea: ContentIdea[];
-    drafting: ContentIdea[];
     filming: ContentIdea[];
     scheduled: ContentIdea[];
     published: ContentIdea[];
   }>({
     idea: [],
-    drafting: [],
     filming: [],
     scheduled: [],
     published: [],
@@ -488,8 +476,8 @@ export default function Dashboard() {
           <div className="h-8 w-48 bg-gray-700/50 rounded-lg animate-pulse" />
           <div className="h-10 w-32 bg-gray-700/50 rounded-lg animate-pulse" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {[...Array(5)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
             <div key={i} className="bg-[#1a1a1a] rounded-xl p-4 border border-[#4CAF50]/10">
               <div className="h-6 w-24 bg-gray-700/50 rounded-lg animate-pulse mb-4" />
               <div className="space-y-4">
@@ -510,14 +498,14 @@ export default function Dashboard() {
       <div className="flex flex-col gap-6 mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#4CAF50] to-[#45a049] bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold">
               Tablero de Contenido
             </h1>
             <p className="text-gray-400 mt-1">Gestiona y organiza tus ideas de contenido</p>
           </div>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 sm:px-6 py-2.5 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-lg shadow-[#4CAF50]/20 hover:shadow-[#4CAF50]/30 whitespace-nowrap"
+            className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 sm:px-6 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-[#4CAF50]/20 hover:shadow-[#4CAF50]/30 whitespace-nowrap"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -535,10 +523,10 @@ export default function Dashboard() {
               placeholder="Buscar contenido..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#0a0a0a] border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]/40 focus:border-transparent transition-all duration-200"
             />
             <svg
-              className="absolute left-3 top-2.5 h-4 w-4 text-gray-400"
+              className="absolute left-3 top-3 h-4 w-4 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -555,7 +543,7 @@ export default function Dashboard() {
             <select
               value={selectedPlatform}
               onChange={(e) => setSelectedPlatform(e.target.value)}
-              className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
+              className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#4CAF50]/40 focus:border-transparent transition-all duration-200"
             >
               <option value="all">Todas las Plataformas</option>
               <option value="YouTube">YouTube</option>
@@ -573,33 +561,23 @@ export default function Dashboard() {
           </div>
 
           <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'dueDate' | 'title')}
-              className="w-full appearance-none bg-[#0a0a0a] border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
-            >
-              <option value="dueDate">Ordenar por Fecha de Publicación</option>
-              <option value="title">Ordenar por Título</option>
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-              <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span>Cantidad de Ideas:</span>
-            <span className="text-white font-medium">
-              {Object.values(ideas).flat().length}
-            </span>
+          <div className="flex items-center justify-center">
+            <div className="bg-[#0a0a0a] border border-white/10 rounded-xl px-4 py-2 text-sm text-gray-400 flex items-center gap-2">
+              <span>Cantidad de Ideas:</span>
+              <span className="text-white font-medium bg-[#4CAF50]/20 text-[#4CAF50] px-2 py-0.5 rounded-lg">
+                {Object.values(ideas).flat().length}
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Kanban Board */}
       <div 
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
         role="grid"
         aria-label="Content Board"
       >
@@ -608,18 +586,18 @@ export default function Dashboard() {
           return (
             <div
               key={status}
-              className={`bg-gradient-to-b ${statusColors[status as keyof typeof statusColors]} rounded-xl p-2 border transition-all duration-200 ${
+              className={`bg-gradient-to-b ${statusColors[status as keyof typeof statusColors]} rounded-2xl p-3 border transition-all duration-200 ${
                 draggedOverStatus === status
                   ? 'border-white/30 shadow-lg shadow-white/10'
                   : 'border-white/5'
-              } shadow-xl backdrop-blur-sm min-w-0`}
+              } shadow-md backdrop-blur-sm min-w-0 hover:shadow-lg hover:shadow-black/10`}
               onDragOver={(e) => handleDragOver(e, status as ContentStatus)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, status as ContentStatus)}
               role="gridcell"
               aria-label={`${status} column`}
             >
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2 min-w-0 group relative">
                   <div className="text-white/80 flex-shrink-0" aria-hidden="true">
                     {statusIcons[status as keyof typeof statusIcons]}
@@ -631,7 +609,7 @@ export default function Dashboard() {
                     {status}
                   </h2>
                   <div 
-                    className="absolute invisible group-hover:visible bg-[#1a1a1a] text-sm text-gray-400 px-3 py-2 rounded-lg shadow-xl -top-10 left-0 whitespace-nowrap"
+                    className="absolute invisible group-hover:visible bg-[#1a1a1a] text-sm text-gray-400 px-3 py-2 rounded-lg shadow-xl -top-10 left-0 whitespace-nowrap z-10"
                     role="tooltip"
                   >
                     {statusTooltips[status as keyof typeof statusTooltips]}
@@ -645,7 +623,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div 
-                className="space-y-3 sm:space-y-4"
+                className="space-y-4"
                 role="list"
                 aria-labelledby={`${status}-heading`}
               >
@@ -657,7 +635,7 @@ export default function Dashboard() {
                     onDragEnd={handleDragEnd}
                     onClick={(e) => handleCardClick(e, item.id)}
                     onKeyDown={(e) => handleKeyDown(e, item, status as ContentStatus)}
-                    className={`group bg-[#0a0a0a]/50 backdrop-blur-sm rounded-lg p-2 cursor-move border transition-all duration-200 hover:shadow-lg hover:shadow-black/20 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] focus:border-transparent ${
+                    className={`group bg-[#0a0a0a]/60 backdrop-blur-sm rounded-xl p-3 cursor-move border transition-all duration-200 hover:shadow-md hover:shadow-black/20 min-w-0 focus:outline-none focus:ring-2 focus:ring-[#4CAF50] focus:border-transparent ${
                       focusedCardId === item.id
                         ? 'border-[#4CAF50]'
                         : 'border-white/5 hover:border-white/10'
@@ -666,25 +644,25 @@ export default function Dashboard() {
                     role="listitem"
                     aria-label={`${item.title} - ${item.platform} - Due ${new Date(item.dueDate).toLocaleDateString()}`}
                   >
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex flex-col gap-3 w-full">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className={`px-2 py-0.5 text-xs rounded-full ${platformColors[item.platform as keyof typeof platformColors].progressBg} ${platformColors[item.platform as keyof typeof platformColors].text} ${platformColors[item.platform as keyof typeof platformColors].border} w-fit font-medium shrink-0`}>
+                        <span className={`px-2.5 py-1 text-xs rounded-lg ${platformColors[item.platform as keyof typeof platformColors].progressBg} ${platformColors[item.platform as keyof typeof platformColors].text} ${platformColors[item.platform as keyof typeof platformColors].border} w-fit font-medium shrink-0`}>
                           {formatPlatformName(item.platform)}
                         </span>
                       </div>
                       
                       <div className="min-w-0">
-                        <h3 className="font-medium group-hover:text-[#4CAF50] transition-colors truncate">
+                        <h3 className="font-medium group-hover:text-[#4CAF50] transition-colors truncate text-base">
                           {item.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-gray-400 line-clamp-2 group-hover:text-white/80 transition-colors break-words">
+                        <p className="text-xs sm:text-sm text-gray-400 line-clamp-2 group-hover:text-white/80 transition-colors break-words mt-1">
                           {item.description}
                         </p>
                       </div>
 
                       <div className="flex items-center justify-between mt-1">
                         {item.dueDate && (
-                          <span className={`text-xs px-2 py-0.5 rounded-full w-fit ${getDueDateColor(item.dueDate)} shrink-0`}>
+                          <span className={`text-xs px-2.5 py-1 rounded-lg w-fit ${getDueDateColor(item.dueDate)} shrink-0`}>
                             Publicación {formatDate(item.dueDate)}
                           </span>
                         )}
@@ -696,7 +674,7 @@ export default function Dashboard() {
                               e.stopPropagation();
                               setEditingCard(item.id);
                             }}
-                            className="p-1 hover:bg-white/10 rounded-full shrink-0"
+                            className="p-1.5 hover:bg-white/10 rounded-lg shrink-0 transition-colors"
                             title="Editar"
                             aria-label={`Editar ${item.title}`}
                           >
@@ -709,7 +687,7 @@ export default function Dashboard() {
                               e.stopPropagation();
                               // Handle duplicate
                             }}
-                            className="p-1 hover:bg-white/10 rounded-full shrink-0"
+                            className="p-1.5 hover:bg-white/10 rounded-lg shrink-0 transition-colors"
                             title="Duplicar"
                             aria-label={`Duplicar ${item.title}`}
                           >
