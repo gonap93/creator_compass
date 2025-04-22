@@ -44,7 +44,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Hero Section */}
-      <Card className="p-8 bg-gradient-to-r from-gray-900 to-green-950">
+      <Card className="p-8 bg-gradient-to-r from-[#111111] to-[#1a2e1b]">
         <h2 className="text-3xl font-bold mb-4">Welcome to Creator Compass</h2>
         <p className="text-gray-300 mb-6 max-w-2xl">
           Your all-in-one platform for planning, creating, and analyzing your social media content. 
