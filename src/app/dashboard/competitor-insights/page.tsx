@@ -193,15 +193,26 @@ export default function CompetitorInsights() {
   const sortedPosts = useMemo(() => {
     if (!data?.posts) return data?.posts || [];
     return [...data.posts].sort((a: InstagramPost | TikTokVideo, b: InstagramPost | TikTokVideo) => {
-      let aValue: number | string = '';
-      let bValue: number | string = '';
-      if (sortConfig.key === 'views' && data.platform === 'tiktok') {
-        aValue = (a as TikTokVideo).stats?.playCount ?? (a as TikTokVideo).views ?? 0;
-        bValue = (b as TikTokVideo).stats?.playCount ?? (b as TikTokVideo).views ?? 0;
+      let aValue: number | string = 0;
+      let bValue: number | string = 0;
+
+      if (data.platform === 'tiktok') {
+        const videoA = a as TikTokVideo;
+        const videoB = b as TikTokVideo;
+        if (sortConfig.key === 'views') {
+          aValue = videoA.stats?.playCount ?? videoA.views ?? 0;
+          bValue = videoB.stats?.playCount ?? videoB.views ?? 0;
+        } else {
+          aValue = videoA[sortConfig.key as keyof TikTokVideo] as number;
+          bValue = videoB[sortConfig.key as keyof TikTokVideo] as number;
+        }
       } else {
-        aValue = a[sortConfig.key as keyof InstagramPost] as number | string;
-        bValue = b[sortConfig.key as keyof InstagramPost] as number | string;
+        const postA = a as InstagramPost;
+        const postB = b as InstagramPost;
+        aValue = postA[sortConfig.key as keyof InstagramPost] as number;
+        bValue = postB[sortConfig.key as keyof InstagramPost] as number;
       }
+
       if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
       if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
@@ -423,7 +434,7 @@ export default function CompetitorInsights() {
                   <h2 className="text-xl font-semibold text-white">Top Performing {platform === 'tiktok' ? 'Videos' : 'Posts'}</h2>
                   <Select
                     value={sortConfig.key === 'likes' ? 'likes' : 'comments'}
-                    onValueChange={(value: 'likes' | 'comments') => handleSort(value)}
+                    onValueChange={(value: 'likes' | 'comments') => handleSort(value as SortableKey)}
                   >
                     <SelectTrigger className="w-[180px] bg-[#333] border-[#444] text-white">
                       <SelectValue placeholder="Select metric" />
@@ -456,9 +467,10 @@ export default function CompetitorInsights() {
                         <div className="flex-grow">
                           <p className="font-medium line-clamp-2 text-white">{(post as TikTokVideo).caption}</p>
                           <p className="text-sm text-gray-400">
-                            {typeof (post as TikTokVideo).publish_date === 'string' && (post as TikTokVideo).publish_date
-                              ? new Date((post as TikTokVideo).publish_date ? (post as TikTokVideo).publish_date : '').toLocaleDateString()
-                              : 'No date available'}
+                            {(() => {
+                              const publishDate = (post as TikTokVideo).publish_date;
+                              return publishDate ? new Date(publishDate).toLocaleDateString() : 'No date available';
+                            })()}
                           </p>
                         </div>
                         <div className="text-right">
