@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { makeApiRequest } from '@/lib/utils/apiUtils';
-import { TikTokVideo } from '@/lib/utils/tiktokUtils';
+import { InstagramProfile } from '@/lib/utils/instagramUtils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,8 +13,8 @@ export async function GET(request: Request) {
     );
   }
 
-  console.log(`Fetching TikTok videos for username: ${username}`);
-  const result = await makeApiRequest<TikTokVideo[]>(`tiktok/videos/${username}`);
+  console.log(`Fetching Instagram profile for username: ${username}`);
+  const result = await makeApiRequest<InstagramProfile>(`instagram/profile/${username}`);
   
   if (result.error) {
     return NextResponse.json(

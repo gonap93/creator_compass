@@ -11,19 +11,45 @@ import { getUserProfile, UserProfile } from '@/lib/firebase/profileUtils';
 import { TikTokVideoPreview } from '@/app/components/TikTokVideoPreview';
 import { PlatformSelector } from '@/app/components/PlatformSelector';
 import { motion, AnimatePresence } from 'framer-motion';
+import { InstagramProfile, InstagramPost, fetchInstagramProfile, fetchInstagramPosts } from '@/lib/utils/instagramUtils';
+import { InstagramPostPreview } from '@/app/components/InstagramPostPreview';
+import Image from 'next/image';
 
 type Platform = 'TikTok' | 'Instagram';
 
-const getMetricValue = (video: TikTokVideo, metric: 'views' | 'likes' | 'comments') => {
-  switch (metric) {
-    case 'views':
-      return video.stats?.playCount ?? video.views ?? 0;
-    case 'likes':
-      return video.stats?.diggCount ?? video.likes ?? 0;
-    case 'comments':
-      return video.stats?.commentCount ?? video.comments ?? 0;
-    default:
-      return 0;
+const isTikTokVideo = (item: any): item is TikTokVideo => {
+  return 'publish_date' in item;
+};
+
+const isInstagramPost = (item: any): item is InstagramPost => {
+  return 'timestamp' in item;
+};
+
+const getMetricValue = (item: TikTokVideo | InstagramPost, metric: 'views' | 'likes' | 'comments'): number => {
+  if ('stats' in item || 'views' in item) { // TikTokVideo
+    const video = item as TikTokVideo;
+    switch (metric) {
+      case 'views':
+        return video.stats?.playCount || video.views || 0;
+      case 'likes':
+        return video.stats?.diggCount || video.likes || 0;
+      case 'comments':
+        return video.stats?.commentCount || video.comments || 0;
+      default:
+        return 0;
+    }
+  } else { // InstagramPost
+    const post = item as InstagramPost;
+    switch (metric) {
+      case 'views':
+        return 0; // Instagram doesn't have views
+      case 'likes':
+        return post.likes;
+      case 'comments':
+        return post.comments;
+      default:
+        return 0;
+    }
   }
 };
 
@@ -45,11 +71,20 @@ const contentVariants = {
   })
 };
 
+const formatDate = (dateStr: string) => {
+  try {
+    return new Date(dateStr).toLocaleDateString();
+  } catch {
+    return 'No date available';
+  }
+};
+
 export default function AnalyticsPage() {
   const { user, loading: authLoading } = useAuth();
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('TikTok');
-  const [profile, setProfile] = useState<TikTokProfile | null>(null);
-  const [videos, setVideos] = useState<TikTokVideo[]>([]);
+  const [profile, setProfile] = useState<TikTokProfile | InstagramProfile | null>(null);
+  const [tiktokVideos, setTiktokVideos] = useState<TikTokVideo[]>([]);
+  const [instagramPosts, setInstagramPosts] = useState<InstagramPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMetric, setSelectedMetric] = useState<'views' | 'likes' | 'comments'>('views');
   const [error, setError] = useState<string | null>(null);
@@ -63,10 +98,11 @@ export default function AnalyticsPage() {
     setSelectedPlatform(newPlatform);
     setLoading(true); // Set loading state when changing platforms
     setProfile(null); // Reset profile when changing platforms
-    setVideos([]); // Reset videos when changing platforms
+    setTiktokVideos([]); // Reset TikTok videos when changing platforms
+    setInstagramPosts([]); // Reset Instagram posts when changing platforms
   };
 
-  const sortedVideos = [...videos].sort((a, b) => {
+  const sortedVideos = [...tiktokVideos].sort((a, b) => {
     const aValue = getMetricValue(a, selectedMetric);
     const bValue = getMetricValue(b, selectedMetric);
     return bValue - aValue;
@@ -126,7 +162,7 @@ export default function AnalyticsPage() {
           });
 
           setProfile(profileData);
-          setVideos(videosData);
+          setTiktokVideos(videosData as TikTokVideo[]);
         } else if (selectedPlatform === 'Instagram') {
           if (!profile?.socialMedia?.instagram) {
             console.log('[Analytics] No Instagram account connected');
@@ -134,8 +170,38 @@ export default function AnalyticsPage() {
             setLoading(false);
             return;
           }
-          // TODO: Implement Instagram data fetching
-          setError('Instagram analytics coming soon!');
+
+          console.log('[Analytics] Found Instagram username:', profile.socialMedia.instagram);
+
+          // Fetch Instagram data
+          const instagramUsername = profile.socialMedia.instagram;
+          console.log('[Analytics] Fetching Instagram data for:', instagramUsername);
+          
+          const [profileData, postsData] = await Promise.all([
+            fetchInstagramProfile(instagramUsername),
+            fetchInstagramPosts(instagramUsername)
+          ]);
+
+          if (!isMounted) return;
+
+          console.log('[Analytics] Instagram data fetched:', {
+            profile: profileData,
+            posts: postsData
+          });
+
+          // Log each post's image URLs
+          postsData.forEach((post, index) => {
+            console.log(`[Analytics] Post ${index + 1} image URLs:`, {
+              id: post.id,
+              username: post.username,
+              image_url: post.image_url,
+              thumbnail_url: post.thumbnail_url,
+              media_type: post.media_type
+            });
+          });
+
+          setProfile(profileData);
+          setInstagramPosts(postsData as InstagramPost[]);
         }
       } catch (err) {
         console.error('[Analytics] Error fetching data:', err);
@@ -233,12 +299,14 @@ export default function AnalyticsPage() {
                 {/* Profile Section */}
                 <Card className="p-6 bg-[#1a1a1a] border-[#333]">
                   <div className="flex items-center space-x-6">
-                    <div className="w-24 h-24 rounded-full bg-[#333] overflow-hidden">
+                    <div className="w-24 h-24 rounded-full bg-[#333] overflow-hidden relative">
                       {profile.avatar_url ? (
-                        <img 
+                        <Image 
                           src={profile.avatar_url} 
                           alt={`@${profile.username}`}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
+                          sizes="96px"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
@@ -248,8 +316,16 @@ export default function AnalyticsPage() {
                     </div>
                     <div>
                       <h1 className="text-2xl font-bold text-white">@{profile.username}</h1>
-                      <p className="text-gray-400">{profile.region}</p>
-                      {profile.verified && (
+                      {'region' in profile && (
+                        <p className="text-gray-400">{profile.region}</p>
+                      )}
+                      {'full_name' in profile && (
+                        <p className="text-gray-400">{profile.full_name}</p>
+                      )}
+                      {'biography' in profile && (
+                        <p className="mt-2 text-gray-400 line-clamp-2">{profile.biography}</p>
+                      )}
+                      {'verified' in profile && profile.verified && (
                         <p className="mt-2 text-[#4CAF50]">Verified Account</p>
                       )}
                     </div>
@@ -257,20 +333,29 @@ export default function AnalyticsPage() {
                   
                   <div className="grid grid-cols-4 gap-4 mt-6">
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-white">{profile.fans.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-white">
+                        {('fans' in profile ? profile.fans : profile.followers_count).toLocaleString()}
+                      </p>
                       <p className="text-sm text-gray-400">Followers</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-white">{profile.following.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-white">
+                        {('following' in profile ? profile.following : profile.following_count).toLocaleString()}
+                      </p>
                       <p className="text-sm text-gray-400">Following</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-white">{profile.heart.toLocaleString()}</p>
-                      <p className="text-sm text-gray-400">Likes</p>
+                      <p className="text-2xl font-bold text-white">
+                        {('heart' in profile ? profile.heart.toLocaleString() : profile.posts_count.toLocaleString())}
+                      </p>
+                      <p className="text-sm text-gray-400">{'heart' in profile ? 'Likes' : 'Posts'}</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-white">{profile.video.toLocaleString()}</p>
-                      <p className="text-sm text-gray-400">Videos</p>
+                      <p className="text-2xl font-bold text-white">
+                        {('video' in profile ? profile.video.toLocaleString() : 
+                          ('is_private' in profile ? (profile.is_private ? 'Private' : 'Public') : 'N/A'))}
+                      </p>
+                      <p className="text-sm text-gray-400">{'video' in profile ? 'Videos' : 'Account'}</p>
                     </div>
                   </div>
                 </Card>
@@ -314,7 +399,14 @@ export default function AnalyticsPage() {
                             <div className="flex-grow">
                               <p className="font-medium line-clamp-2 text-white">{video.caption}</p>
                               <p className="text-sm text-gray-400">
-                                {video.publish_date ? new Date(video.publish_date).toLocaleDateString() : 'No date available'}
+                                {(() => {
+                                  if ('publish_date' in video && video.publish_date) {
+                                    return new Date(video.publish_date).toLocaleDateString();
+                                  } else if ('timestamp' in video && typeof video.timestamp === 'string') {
+                                    return new Date(video.timestamp).toLocaleDateString();
+                                  }
+                                  return 'No date available';
+                                })()}
                               </p>
                             </div>
                             <div className="text-right">
@@ -333,7 +425,7 @@ export default function AnalyticsPage() {
 
                   <TabsContent value="grid">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {videos.map((video) => (
+                      {tiktokVideos.map((video) => (
                         <TikTokVideoPreview key={video.id} video={video} />
                       ))}
                     </div>
@@ -342,10 +434,134 @@ export default function AnalyticsPage() {
               </div>
             )}
 
-            {selectedPlatform === 'Instagram' && !loading && (
-              <Card className="p-6 bg-[#1a1a1a] border-[#333]">
-                <p className="text-gray-400">Instagram analytics coming soon!</p>
-              </Card>
+            {selectedPlatform === 'Instagram' && profile && !loading && (
+              <div className="space-y-6">
+                {/* Profile Section */}
+                <Card className="p-6 bg-[#1a1a1a] border-[#333]">
+                  <div className="flex items-center space-x-6">
+                    <div className="w-24 h-24 rounded-full bg-[#333] overflow-hidden relative">
+                      {profile.avatar_url ? (
+                        <Image 
+                          src={profile.avatar_url} 
+                          alt={`@${profile.username}`}
+                          fill
+                          className="object-cover"
+                          sizes="96px"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-2xl text-white">@{profile.username[0].toUpperCase()}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <h1 className="text-2xl font-bold text-white">@{profile.username}</h1>
+                      <p className="text-gray-400">{(profile as InstagramProfile).full_name}</p>
+                      <p className="mt-2 text-gray-400 line-clamp-2">{(profile as InstagramProfile).biography}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-4 mt-6">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-white">{profile ? (profile as InstagramProfile).followers_count.toLocaleString() : '0'}</p>
+                      <p className="text-sm text-gray-400">Followers</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-white">{profile ? (profile as InstagramProfile).following_count.toLocaleString() : '0'}</p>
+                      <p className="text-sm text-gray-400">Following</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-white">{profile ? (profile as InstagramProfile).posts_count.toLocaleString() : '0'}</p>
+                      <p className="text-sm text-gray-400">Posts</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-white">{profile ? ((profile as InstagramProfile).is_private ? 'Private' : 'Public') : 'N/A'}</p>
+                      <p className="text-sm text-gray-400">Account</p>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Posts Section */}
+                <Tabs defaultValue="ranking" className="w-full space-y-6">
+                  <TabsList className="grid w-full grid-cols-2 bg-[#1a1a1a] border border-[#333]">
+                    <TabsTrigger value="ranking" className="data-[state=active]:bg-[#4CAF50] data-[state=active]:text-white">Post Rankings</TabsTrigger>
+                    <TabsTrigger value="grid" className="data-[state=active]:bg-[#4CAF50] data-[state=active]:text-white">Post Grid</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="ranking">
+                    <Card className="p-6 bg-[#1a1a1a] border-[#333]">
+                      <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold text-white">Top Performing Posts</h2>
+                        <Select
+                          value={selectedMetric}
+                          onValueChange={(value: 'views' | 'likes' | 'comments') => setSelectedMetric(value)}
+                        >
+                          <SelectTrigger className="w-[180px] bg-[#333] border-[#444] text-white">
+                            <SelectValue placeholder="Select metric" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-[#1a1a1a] border-[#333] text-white">
+                            <SelectItem value="likes">Likes</SelectItem>
+                            <SelectItem value="comments">Comments</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-4">
+                        {selectedPlatform === 'Instagram' && instagramPosts.slice(0, 5).map((post: InstagramPost) => {
+                          console.log('Instagram post data:', post);
+                          const imageUrl = post.thumbnail_url || post.image_url;
+                          console.log('Using image URL:', imageUrl);
+                          
+                          return (
+                          <div key={post.id} className="flex items-center space-x-4 p-4 bg-[#333] rounded-lg">
+                            <div className="w-16 h-16 relative flex-shrink-0">
+                              {imageUrl ? (
+                                <Image
+                                  src={imageUrl}
+                                  alt={post.caption || `Instagram post ${post.id}`}
+                                  fill
+                                  className="object-cover rounded"
+                                  sizes="64px"
+                                  priority
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gray-600 rounded flex items-center justify-center">
+                                  <span className="text-gray-400 text-xs">No image</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-grow">
+                              <p className="font-medium line-clamp-2 text-white">{post.caption}</p>
+                              <p className="text-sm text-gray-400">
+                                {post?.timestamp ? formatDate(post.timestamp) : 'No date available'}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xl font-bold text-white">
+                                {selectedMetric === 'likes' 
+                                  ? (post.likes || 0).toLocaleString()
+                                  : (post.comments || 0).toLocaleString()}
+                              </p>
+                              <p className="text-sm text-gray-400">
+                                {selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      </div>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="grid">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {instagramPosts.map((post) => (
+                        <InstagramPostPreview key={post.id} post={post} />
+                      ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
             )}
           </motion.div>
         </AnimatePresence>

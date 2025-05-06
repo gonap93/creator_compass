@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { makeApiRequest } from '@/lib/utils/apiUtils';
-import { TikTokVideo } from '@/lib/utils/tiktokUtils';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,9 +13,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`Scraping TikTok videos for username: ${username}`);
-    const result = await makeApiRequest<TikTokVideo[]>(
-      'tiktok/scrape-posts',
+    console.log(`Scraping Instagram profile for username: ${username}`);
+    const result = await makeApiRequest(
+      'instagram/scrape-posts',
       'POST',
       { username }
     );
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result.data);
   } catch (error) {
-    console.error('Error parsing request:', error);
+    console.error('Error in Instagram scraping:', error);
     return NextResponse.json(
       { error: 'Invalid request format' },
       { status: 400 }

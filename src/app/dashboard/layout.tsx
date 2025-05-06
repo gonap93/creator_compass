@@ -56,6 +56,12 @@ export default function DashboardLayout({
       color: '#2196F3'
     },
     {
+      href: '/dashboard/competitor-insights',
+      label: 'Competitor Insights',
+      icon: FiBarChart2,
+      color: '#FF5722'
+    },
+    {
       href: '/dashboard/profile',
       label: 'Profile',
       icon: FiUser,

@@ -24,6 +24,34 @@ const nextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "p16-common-sign-va.tiktokcdn-us.com",
+      },
+      {
+        protocol: "https",
+        hostname: "p16-sign-va.tiktokcdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "p16-sign-sg.tiktokcdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "scontent-iad3-1.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "api.apify.com",
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

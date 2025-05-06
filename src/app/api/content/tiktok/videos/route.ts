@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     }
 
     console.log(`Fetching TikTok videos for username: ${username}`);
-    const result = await makeApiRequest<TikTokVideo[]>(`videos/${username}`);
+    const result = await makeApiRequest<TikTokVideo[]>(`tiktok/videos/${username}`);
     
     if (result.error) {
       return NextResponse.json(

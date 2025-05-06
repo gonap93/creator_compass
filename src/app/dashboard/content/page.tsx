@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { getUserContentIdeas, updateContentStatus, deleteContentIdea, updateContentIdea } from '@/lib/firebase/contentUtils';
-import { ContentIdea, ContentStatus, Platform } from '@/lib/types/content';
+import { ContentIdea, ContentStatus, Platform, ContentGoal } from '@/lib/types/content';
 import AddContentModal from '@/components/AddContentModal';
 
 const statusColors = {
@@ -307,8 +307,11 @@ export default function Dashboard() {
       title: formData.get('title') as string,
       description: formData.get('description') as string,
       platform: formData.get('platform') as Platform,
+      goal: formData.get('goal') as ContentGoal,
       dueDate: dueDate.toISOString(),
       updatedAt: new Date().toISOString(),
+      caption: formData.get('caption') as string,
+      tags: (formData.get('tags') as string).split(',').map(tag => tag.trim()).filter(Boolean),
     };
 
     try {
@@ -321,87 +324,6 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error updating content:', error);
     }
-  };
-
-  // Add EditModal component at the top level of the component
-  const EditModal = ({ item, onClose, onSubmit }: { 
-    item: ContentIdea; 
-    onClose: () => void; 
-    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  }) => {
-    return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div className="bg-[#1a1a1a] w-full max-w-md rounded-xl border border-white/10 shadow-xl p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-medium text-white">Editar Contenido</h3>
-            <button onClick={onClose} className="text-gray-400 hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm text-gray-400">Plataforma</label>
-              <select
-                name="platform"
-                defaultValue={item.platform}
-                className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
-              >
-                <option value="YouTube">YouTube</option>
-                <option value="TikTok">TikTok</option>
-                <option value="Instagram">Instagram</option>
-                <option value="LinkedIn">LinkedIn</option>
-                <option value="Twitter">Twitter</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm text-gray-400">Título</label>
-              <input
-                name="title"
-                type="text"
-                defaultValue={item.title}
-                className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm text-gray-400">Descripción</label>
-              <textarea
-                name="description"
-                defaultValue={item.description}
-                rows={4}
-                className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm text-gray-400">Fecha de Publicación</label>
-              <input
-                name="dueDate"
-                type="date"
-                defaultValue={formatDateForInput(item.dueDate)}
-                className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#4CAF50]/40"
-              />
-            </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm bg-[#4CAF50] hover:bg-[#45a049] text-white rounded-lg transition-colors"
-              >
-                Guardar Cambios
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
   };
 
   // Filter and sort function
@@ -749,14 +671,31 @@ export default function Dashboard() {
             setIdeas(userIdeas);
           }
         }}
+        mode="add"
       />
 
-      {/* Add EditModal at the bottom of the return statement, before the closing tag */}
+      {/* Edit Modal */}
       {editingCard && (
-        <EditModal
-          item={Object.values(ideas).flat().find(item => item.id === editingCard)!}
+        <AddContentModal
+          isOpen={!!editingCard}
           onClose={() => setEditingCard(null)}
-          onSubmit={(e) => handleEditSubmit(e, Object.values(ideas).flat().find(item => item.id === editingCard)!)}
+          onAdd={async () => {
+            if (auth.currentUser) {
+              const userIdeas = await getUserContentIdeas(auth.currentUser.uid);
+              setIdeas(userIdeas);
+            }
+          }}
+          mode="edit"
+          initialData={Object.values(ideas).flat().find(item => item.id === editingCard) ? {
+            id: Object.values(ideas).flat().find(item => item.id === editingCard)!.id,
+            title: Object.values(ideas).flat().find(item => item.id === editingCard)!.title,
+            description: Object.values(ideas).flat().find(item => item.id === editingCard)!.description,
+            tags: Object.values(ideas).flat().find(item => item.id === editingCard)!.tags.join(', '),
+            caption: Object.values(ideas).flat().find(item => item.id === editingCard)!.caption,
+            platform: Object.values(ideas).flat().find(item => item.id === editingCard)!.platform,
+            goal: Object.values(ideas).flat().find(item => item.id === editingCard)!.goal,
+            dueDate: formatDateForInput(Object.values(ideas).flat().find(item => item.id === editingCard)!.dueDate),
+          } : undefined}
         />
       )}
     </div>

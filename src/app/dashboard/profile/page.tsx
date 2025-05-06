@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useAuth } from '@/lib/hooks/useAuth';
 import ProfileForm from '@/components/profile/ProfileForm';
 import ProfilePictureUpload from '@/components/profile/ProfilePictureUpload';
-import SocialMediaPlatforms from '@/components/profile/SocialMediaPlatforms';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -54,17 +53,6 @@ export default function ProfilePage() {
         <section className="bg-[#1a1a1a] rounded-xl p-6 border border-[#4CAF50]/10">
           <h2 className="text-xl font-semibold mb-4">Información Personal</h2>
           <ProfileForm />
-        </section>
-
-        {/* Social Media Section */}
-        <section className="bg-[#1a1a1a] rounded-xl p-6 border border-[#4CAF50]/10">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold">Plataformas Conectadas</h2>
-          </div>
-          <SocialMediaPlatforms />
-          <p className="mt-4 text-sm text-gray-400">
-            Conecta tus cuentas de redes sociales para habilitar la gestión y análisis de contenido multiplataforma.
-          </p>
         </section>
 
         {/* Content Preferences Section */}

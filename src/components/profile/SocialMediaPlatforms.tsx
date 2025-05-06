@@ -100,7 +100,7 @@ export default function SocialMediaPlatforms() {
 
   const scrapeVideos = async (username: string): Promise<void> => {
     try {
-      const response = await fetch('/api/tiktok/scrape-videos', {
+      const response = await fetch('/api/tiktok/scrape-posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,6 +115,27 @@ export default function SocialMediaPlatforms() {
       console.log('Successfully scraped videos for:', username);
     } catch (error) {
       console.error('Error scraping videos:', error);
+      throw error;
+    }
+  };
+
+  const scrapeInstagram = async (username: string): Promise<void> => {
+    try {
+      const response = await fetch('/api/instagram/scrape-posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to scrape Instagram profile');
+      }
+
+      console.log('Successfully scraped Instagram profile for:', username);
+    } catch (error) {
+      console.error('Error scraping Instagram profile:', error);
       throw error;
     }
   };
@@ -141,9 +162,11 @@ export default function SocialMediaPlatforms() {
         }
       });
 
-      // If connecting TikTok, also scrape videos
+      // Scrape data based on platform
       if (platformId === 'tiktok') {
         await scrapeVideos(username);
+      } else if (platformId === 'instagram') {
+        await scrapeInstagram(username);
       }
 
       // Set successful connection status
@@ -151,7 +174,7 @@ export default function SocialMediaPlatforms() {
         ...prev,
         [platformId]: { 
           success: true, 
-          message: `Successfully connected to ${platforms.find(p => p.id === platformId)?.name}`
+          message: `Connected to ${platforms.find(p => p.id === platformId)?.name}`
         }
       }));
     } catch (error) {

@@ -16,6 +16,7 @@ export interface ContentIdea {
   dueDate: string; // ISO date string
   createdAt: string;
   updatedAt: string;
+  caption?: string;
 }
 
 export interface ContentBoard {

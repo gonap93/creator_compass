@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiLoader, FiSearch, FiAlertCircle, FiCheckCircle, FiHash, FiCoffee, FiHeart, FiPenTool } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import AddContentModal from '@/components/AddContentModal';
+import { auth } from '@/lib/firebase/firebase';
+import { getUserContentIdeas } from '@/lib/firebase/contentUtils';
 
 interface ContentIdea {
   title: string;
   description: string;
   hashtags: string[];
+  caption?: string;
 }
 
 interface ApiResponse {
@@ -21,6 +25,23 @@ export default function CreatorAIPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [selectedIdea, setSelectedIdea] = useState<ContentIdea | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [contentIdeas, setContentIdeas] = useState<any[]>([]);
+
+  // Load cached ideas and username on mount
+  useEffect(() => {
+    const cached = sessionStorage.getItem('creator-ai-cache');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed.username && parsed.recommendations) {
+          setUsername(parsed.username);
+          setRecommendations(parsed.recommendations);
+        }
+      } catch {}
+    }
+  }, []);
 
   const getIdeaIcon = (title: string) => {
     if (title.toLowerCase().includes('desayuno') || title.toLowerCase().includes('comida')) {
@@ -56,11 +77,27 @@ export default function CreatorAIPage() {
       const data: ApiResponse = await response.json();
       setRecommendations(data.ideas);
       setSuccess(true);
+      // Cache the ideas and username in sessionStorage
+      sessionStorage.setItem('creator-ai-cache', JSON.stringify({ username, recommendations: data.ideas }));
     } catch (err) {
       setError('Failed to fetch recommendations. Please try again later.');
       console.error('Error fetching recommendations:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleIdeaClick = (idea: ContentIdea) => {
+    setSelectedIdea(idea);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleModalClose = async () => {
+    setIsCreateModalOpen(false);
+    if (auth.currentUser) {
+      const userIdeas = await getUserContentIdeas(auth.currentUser.uid);
+      const allIdeas = Object.values(userIdeas).flat();
+      setContentIdeas(allIdeas);
     }
   };
 
@@ -95,7 +132,7 @@ export default function CreatorAIPage() {
                 Analyzing Profile...
               </>
             ) : (
-              'Generate Ideas'
+              recommendations.length > 0 ? 'Mmm... Re-Generate' : 'Generate Ideas'
             )}
           </button>
         </div>
@@ -138,7 +175,8 @@ export default function CreatorAIPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 hover:border-[#4CAF50]/30 transition-all duration-200 group hover:shadow-lg hover:shadow-[#4CAF50]/5"
+                className="bg-[#1a1a1a] border border-[#333] rounded-lg p-6 hover:border-[#4CAF50]/30 transition-all duration-200 group hover:shadow-lg hover:shadow-[#4CAF50]/5 cursor-pointer"
+                onClick={() => handleIdeaClick(idea)}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-[#4CAF50]/10 text-[#4CAF50] group-hover:bg-[#4CAF50]/20 transition-colors">
@@ -166,6 +204,18 @@ export default function CreatorAIPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Add Content Modal */}
+      <AddContentModal
+        isOpen={isCreateModalOpen}
+        onClose={handleModalClose}
+        onAdd={handleModalClose}
+        initialData={selectedIdea ? {
+          title: selectedIdea.title,
+          description: selectedIdea.description,
+          tags: selectedIdea.hashtags.join(', '),
+        } : undefined}
+      />
     </div>
   );
 } 

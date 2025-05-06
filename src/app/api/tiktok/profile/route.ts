@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   }
 
   console.log(`Fetching TikTok profile for username: ${username}`);
-  const result = await makeApiRequest<TikTokProfile>(`profile/${username}`);
+  const result = await makeApiRequest<TikTokProfile>(`tiktok/profile/${username}`);
   
   if (result.error) {
     return NextResponse.json(

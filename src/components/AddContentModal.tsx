@@ -2,18 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { auth } from '@/lib/firebase/firebase';
-import { addContentIdea } from '@/lib/firebase/contentUtils';
+import { addContentIdea, updateContentIdea } from '@/lib/firebase/contentUtils';
 import { Platform, ContentGoal, ContentStatus } from '@/lib/types/content';
+import { FiZap } from 'react-icons/fi';
 
 interface AddContentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAdd: () => void;
+  initialData?: {
+    title?: string;
+    description?: string;
+    tags?: string;
+    caption?: string;
+    platform?: Platform;
+    goal?: ContentGoal;
+    dueDate?: string;
+    id?: string;
+  };
+  mode?: 'add' | 'edit';
 }
 
-export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentModalProps) {
+export default function AddContentModal({ isOpen, onClose, onAdd, initialData, mode = 'add' }: AddContentModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [caption, setCaption] = useState('');
+  const [generatingCaption, setGeneratingCaption] = useState(false);
 
   useEffect(() => {
     // Log authentication state when component mounts
@@ -22,18 +36,35 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
       isAuthenticated: !!auth.currentUser,
       uid: auth.currentUser?.uid
     });
-  }, []);
+    setCaption('');
+  }, [isOpen]);
+
+  const handleGenerateCaption = async () => {
+    setGeneratingCaption(true);
+    setError('');
+    try {
+      // Get current title and description values
+      const title = (document.getElementById('title') as HTMLInputElement)?.value || '';
+      const description = (document.getElementById('description') as HTMLTextAreaElement)?.value || '';
+      const prompt = `Write a catchy social media caption for this post idea.\nTitle: ${title}\nDescription: ${description}`;
+      const response = await fetch('/api/openai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] }),
+      });
+      if (!response.ok) throw new Error('Failed to generate caption');
+      const data = await response.json();
+      setCaption(data.text || '');
+    } catch (err: any) {
+      setError('Failed to generate caption.');
+    } finally {
+      setGeneratingCaption(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Log authentication check
-    console.log('[AddContentModal] Checking auth before submit:', {
-      user: auth.currentUser,
-      isAuthenticated: !!auth.currentUser,
-      uid: auth.currentUser?.uid
-    });
-
     if (!auth.currentUser) {
       setError('You must be signed in to add content');
       return;
@@ -49,6 +80,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
     const goal = formData.get('goal') as ContentGoal;
     const dueDateStr = formData.get('dueDate') as string;
     const tags = formData.get('tags') as string;
+    const captionValue = (formData.get('caption') as string) || caption;
 
     // Create a date at noon UTC to avoid timezone issues
     const dueDate = new Date(dueDateStr + 'T12:00:00Z').toISOString();
@@ -62,26 +94,35 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
       status: 'idea' as ContentStatus,
       tags: tags.split(',').map(tag => tag.trim()).filter(Boolean),
       dueDate,
-      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      caption: captionValue,
     };
 
     try {
-      console.log('[AddContentModal] Attempting to add content idea:', contentData);
-
-      await addContentIdea(contentData);
-      console.log('[AddContentModal] Content idea added successfully');
+      if (mode === 'add') {
+        // Add new content idea
+        await addContentIdea({
+          ...contentData,
+          createdAt: new Date().toISOString(),
+        });
+      } else {
+        // Update existing content idea
+        if (!initialData?.id) {
+          throw new Error('Content ID is required for editing');
+        }
+        await updateContentIdea(initialData.id, contentData);
+      }
 
       onAdd();
       onClose();
     } catch (err: any) {
-      console.error('[AddContentModal] Error adding content idea:', {
+      console.error('[AddContentModal] Error:', {
         error: err,
         code: err.code,
         message: err.message,
         stack: err.stack
       });
-      setError(err.message || 'Failed to add content idea. Please check your Firestore permissions.');
+      setError(err.message || `Failed to ${mode} content idea. Please check your Firestore permissions.`);
       setLoading(false);
     }
   };
@@ -96,7 +137,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
       }}
     >
       <div className="bg-[#1a1a1a] rounded-xl p-6 w-full max-w-lg border border-[#4CAF50]/10">
-        <h2 className="text-xl font-bold mb-6">Add New Content Idea</h2>
+        <h2 className="text-xl font-bold mb-6">{mode === 'add' ? 'Add New Content Idea' : 'Edit Idea'}</h2>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg p-4 mb-6">
@@ -113,6 +154,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
               id="title"
               name="title"
               type="text"
+              defaultValue={initialData?.title}
               required
               className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]/40"
               placeholder="Enter title"
@@ -126,10 +168,37 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
             <textarea
               id="description"
               name="description"
+              defaultValue={initialData?.description}
               required
               rows={3}
               className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]/40"
               placeholder="Enter description"
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="caption" className="block text-sm font-medium text-gray-300">
+                Caption
+              </label>
+              <button
+                type="button"
+                onClick={handleGenerateCaption}
+                disabled={generatingCaption}
+                className="flex items-center gap-1 text-sm text-blue-500 hover:text-blue-600 font-medium px-0 py-0 bg-transparent border-none shadow-none focus:outline-none disabled:opacity-60"
+                style={{ fontSize: '1rem', fontWeight: 500 }}
+              >
+                <span role="img" aria-label="magic-wand">✨</span> Generate Caption
+              </button>
+            </div>
+            <textarea
+              id="caption"
+              name="caption"
+              value={caption}
+              onChange={e => setCaption(e.target.value)}
+              rows={2}
+              className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]/40"
+              placeholder="Write or generate a caption for your post"
             />
           </div>
 
@@ -181,6 +250,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
               id="tags"
               name="tags"
               type="text"
+              defaultValue={initialData?.tags}
               className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#4CAF50]/40"
               placeholder="Enter tags"
             />
@@ -195,6 +265,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
               name="dueDate"
               type="date"
               required
+              defaultValue={initialData?.dueDate}
               className="w-full bg-[#0a0a0a] border border-[#4CAF50]/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#4CAF50]/40 [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:invert-[1] [&::-webkit-calendar-picker-indicator]:hover:opacity-70"
               placeholder="dd/mm/yyyy"
             />
@@ -213,7 +284,7 @@ export default function AddContentModal({ isOpen, onClose, onAdd }: AddContentMo
               disabled={loading}
               className="bg-[#4CAF50] hover:bg-[#45a049] text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Adding...' : 'Add Idea'}
+              {loading ? 'Saving...' : mode === 'add' ? 'Add Idea' : 'Save Changes'}
             </button>
           </div>
         </form>

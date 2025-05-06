@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log(`Scraping TikTok videos for username: ${username}`);
+    console.log(`Scraping TikTok posts for username: ${username}`);
     const result = await makeApiRequest<TikTokVideo[]>(
-      'scrape-videos',
+      'tiktok/scrape-posts',
       'POST',
       { username }
     );

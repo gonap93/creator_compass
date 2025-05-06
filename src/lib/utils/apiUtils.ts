@@ -13,7 +13,7 @@ export interface ApiResponse<T> {
 }
 
 export function getApiUrl(endpoint: string): string {
-  return `${API_BASE_URL}/tiktok/${endpoint}`;
+  return `${API_BASE_URL}/${endpoint}`;
 }
 
 export function validateApiKey(): ApiError | null {
@@ -76,6 +76,29 @@ export async function makeApiRequest<T>(
     }
 
     const data = await response.json();
+    console.log(`API Response from ${endpoint}:`, {
+      endpoint,
+      data,
+      status: response.status
+    });
+    
+    // Validate Instagram post data
+    if (endpoint.startsWith('instagram/posts/')) {
+      const posts = data as unknown as Array<any>;
+      posts?.forEach((post, index) => {
+        console.log(`Post ${index + 1} data:`, {
+          id: post.id,
+          image_url: post.image_url,
+          thumbnail_url: post.thumbnail_url,
+          media_type: post.media_type
+        });
+        
+        if (!post.image_url && !post.thumbnail_url) {
+          console.warn(`Missing image URLs for post ${post.id}`);
+        }
+      });
+    }
+
     return { data };
   } catch (error) {
     console.error(`Error in API request to ${endpoint}:`, error);

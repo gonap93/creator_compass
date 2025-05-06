@@ -10,6 +10,7 @@ import {
   FiTrendingUp,
   FiPlay
 } from "react-icons/fi"
+import SocialMediaPlatforms from '@/components/profile/SocialMediaPlatforms';
 
 // Mock data for charts
 const viewsData = {
@@ -59,6 +60,17 @@ export default function DashboardPage() {
             Watch Tutorial
           </Button>
         </div>
+      </Card>
+
+      {/* Social Media Platforms Section */}
+      <Card className="p-6">
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">Plataformas Conectadas</h2>
+        </div>
+        <SocialMediaPlatforms />
+        <p className="mt-4 text-sm text-gray-400">
+          Conecta tus cuentas de redes sociales para habilitar la gestión y análisis de contenido multiplataforma.
+        </p>
       </Card>
 
       {/* Metrics Section */}

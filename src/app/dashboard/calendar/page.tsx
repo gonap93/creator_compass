@@ -226,7 +226,7 @@ export default function CalendarPage() {
                   <div 
                     key={dateIndex}
                     className={cn(
-                      "p-2 border-r border-b border-[#333] min-h-[60px] relative hover:bg-[#2a2a2a]/30 transition-colors",
+                      "p-2 border-r border-b border-[#333] min-h-[55px] relative hover:bg-[#2a2a2a]/30 transition-colors",
                       date.toDateString() === today.toDateString() && "bg-[#4CAF50]/5"
                     )}
                   >
@@ -234,7 +234,7 @@ export default function CalendarPage() {
                       <div
                         key={ideaIndex}
                         className={cn(
-                          "absolute left-1 right-1 p-1.5 rounded-md text-xs shadow-sm group",
+                          "absolute left-1 right-1 p-1.5 rounded-md text-xs shadow-sm group h-7 flex items-center",
                           getPlatformColor(idea.platform as Platform),
                           "hover:opacity-90 transition-opacity cursor-pointer"
                         )}
@@ -243,38 +243,36 @@ export default function CalendarPage() {
                           height: '24px'
                         }}
                       >
-                        <div className="flex items-center justify-between h-full overflow-hidden">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            {getPlatformIcon(idea.platform as Platform)}
-                            <span className="truncate text-white">{idea.title}</span>
-                          </div>
-                          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setEditingCard(idea.id);
-                              }}
-                              className="p-0.5 hover:bg-white/10 rounded transition-colors"
-                              title="Edit"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                // Handle duplicate
-                              }}
-                              className="p-0.5 hover:bg-white/10 rounded transition-colors"
-                              title="Copy"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                                <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
-                              </svg>
-                            </button>
-                          </div>
+                        <div className="flex items-center gap-2 min-w-0 h-full">
+                          {getPlatformIcon(idea.platform as Platform)}
+                          <span className="text-sm text-white truncate max-w-[110px]">{idea.title}</span>
+                        </div>
+                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingCard(idea.id);
+                            }}
+                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                            title="Edit"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Handle duplicate
+                            }}
+                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                            title="Copy"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                              <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+                            </svg>
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -308,7 +306,7 @@ export default function CalendarPage() {
         <div className="grid grid-cols-7">
           {/* Empty cells for days before the first day of the month */}
           {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-            <div key={`empty-${i}`} className="p-2 border-r border-b border-[#333] min-h-[120px]" />
+            <div key={`empty-${i}`} className="p-2 border-r border-b border-[#333] min-h-[110px]" />
           ))}
 
           {/* Days of the month */}
@@ -321,7 +319,7 @@ export default function CalendarPage() {
               <div
                 key={i}
                 className={cn(
-                  "p-2 border-r border-b border-[#333] min-h-[120px] relative hover:bg-[#2a2a2a]/30 transition-colors",
+                  "p-2 border-r border-b border-[#333] min-h-[105px] relative hover:bg-[#2a2a2a]/30 transition-colors",
                   isToday && "bg-[#4CAF50]/5",
                   (i + firstDayOfMonth + 1) % 7 === 0 && "border-r-0"
                 )}
@@ -337,43 +335,41 @@ export default function CalendarPage() {
                     <div
                       key={ideaIndex}
                       className={cn(
-                        "p-1.5 rounded-md text-xs shadow-sm group",
+                        "p-1.5 rounded-md text-xs shadow-sm group h-7 flex items-center",
                         getPlatformColor(idea.platform as Platform),
                         "hover:opacity-90 transition-opacity cursor-pointer"
                       )}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          {getPlatformIcon(idea.platform as Platform)}
-                          <span className="truncate text-white">{idea.title}</span>
-                        </div>
-                        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingCard(idea.id);
-                            }}
-                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
-                            title="Edit"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Handle duplicate
-                            }}
-                            className="p-0.5 hover:bg-white/10 rounded transition-colors"
-                            title="Copy"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                              <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
-                            </svg>
-                          </button>
-                        </div>
+                      <div className="flex items-center gap-2 min-w-0 h-full">
+                        {getPlatformIcon(idea.platform as Platform)}
+                        <span className="text-sm text-white truncate max-w-[110px]">{idea.title}</span>
+                      </div>
+                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingCard(idea.id);
+                          }}
+                          className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                          title="Edit"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Handle duplicate
+                          }}
+                          className="p-0.5 hover:bg-white/10 rounded transition-colors"
+                          title="Copy"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                            <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -511,7 +507,7 @@ export default function CalendarPage() {
             </div>
             <button
               onClick={goToToday}
-              className="px-4 py-2 rounded-lg hover:bg-[#2a2a2a] transition-colors"
+              className="px-4 py-2 rounded-lg hover:bg-[#2a2a2a] transition-colors border border-[#333]"
             >
               Today
             </button>
@@ -554,7 +550,7 @@ export default function CalendarPage() {
                     idea.platform.toLowerCase() === 'instagram' && "text-purple-400"
                   )}>
                     {getPlatformIcon(idea.platform as Platform)}
-                    <span>{idea.title}</span>
+                    <span className="text-sm text-white truncate max-w-[120px]">{idea.title}</span>
                   </div>
                   <span className="text-sm text-gray-400">
                     {new Date(idea.dueDate).toLocaleTimeString('en-US', {
